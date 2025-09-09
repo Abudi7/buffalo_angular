@@ -1,0 +1,8 @@
+sql("CREATE EXTENSION IF NOT EXISTS pgcrypto;")
+
+create_table("users") {
+  t.Column("id", "uuid", {"primary": true, "default_raw": "gen_random_uuid()"})
+  t.Column("email", "text", {"null": false, "unique": true})
+  t.Column("password_hash", "text", {"null": false})
+  t.Timestamps()
+}

@@ -1,0 +1,7 @@
+{
+  "name": "timetrac-frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

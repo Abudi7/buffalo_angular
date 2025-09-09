@@ -1,0 +1,18 @@
+sql("CREATE EXTENSION IF NOT EXISTS pgcrypto;")
+
+create_table("timetrac") {
+  t.Column("id", "uuid", {"primary": true, "default_raw": "gen_random_uuid()"})
+  t.Column("user_id", "uuid", {"null": false})
+  t.Column("project", "string", {"null": true})
+  t.Column("note", "text", {"null": true})
+  t.Column("color", "string", {"null": false})
+  t.Column("start_at", "timestamp", {"null": false, "default_raw": "now()"})
+  t.Column("end_at", "timestamp", {"null": true})
+  t.Timestamps()
+}
+
+sql("ALTER TABLE timetrac ALTER COLUMN color SET DEFAULT '#3b82f6';")
+sql("ALTER TABLE timetrac ADD COLUMN IF NOT EXISTS tags TEXT[] NOT NULL DEFAULT '{}'::text[];")
+
+add_index("timetrac", "user_id")
+add_index("timetrac", "start_at", {"name": "idx_timetrac_start_at"})

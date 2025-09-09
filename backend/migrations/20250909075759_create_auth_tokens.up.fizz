@@ -1,0 +1,10 @@
+create_table("auth_tokens") {
+  t.Column("jti", "string", {"size": 64, "primary": true})
+  t.Column("user_id", "uuid", {"null": false})
+  t.Column("revoked_at", "timestamp", {"null": true})
+  t.Column("expires_at", "timestamp", {"null": false})
+  t.Timestamps()
+}
+
+add_foreign_key("auth_tokens", "user_id", {"users": ["id"]}, {"on_delete":"cascade"})
+add_index("auth_tokens", "user_id", {"name":"idx_auth_tokens_user_id"})

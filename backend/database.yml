@@ -1,0 +1,20 @@
+development:
+  dialect: "postgres"
+  database: "timetrac"
+  user: "app"
+  password: "apppass"
+  host: "127.0.0.1"
+  port: "5433"
+  pool: 5
+
+test:
+  dialect: "postgres"
+  database: "timetrac_test"
+  user: "app"
+  password: "apppass"
+  host: "127.0.0.1"
+  port: "5433"
+  pool: 5
+
+production:
+  url: {{ envOr "DATABASE_URL" "" }}

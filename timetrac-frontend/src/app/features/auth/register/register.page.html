@@ -1,0 +1,96 @@
+<!-- src/app/features/auth/register/register.page.html -->
+
+<!-- Local header for register screen -->
+<ion-header class="register-header">
+    <ion-toolbar>
+      <ion-title>TimeTrac</ion-title>
+      <div slot="end" class="brand-badge">Create</div>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content class="register-bg" [fullscreen]="true">
+    <div class="register-wrap">
+      <ion-card class="register-card">
+        <ion-card-header>
+          <ion-card-title>Create account</ion-card-title>
+          <ion-card-subtitle>Start tracking in minutes</ion-card-subtitle>
+        </ion-card-header>
+  
+        <ion-card-content>
+          <!-- expose the form as #f and pass it to submit(f) -->
+          <form #f="ngForm" (ngSubmit)="submit(f)" novalidate>
+            <!-- Email -->
+            <ion-item fill="outline" class="field">
+              <!-- Ionicons: make sure addIcons(...) called in main.ts -->
+              <ion-icon [name]="'mailOutline'" slot="start"></ion-icon>
+              <ion-input
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                [(ngModel)]="formData.email"
+                label="Email"
+                labelPlacement="floating"
+                required
+              ></ion-input>
+            </ion-item>
+  
+            <!-- Password + show/hide -->
+            <ion-item fill="outline" class="field">
+              <ion-icon [name]="'lockClosedOutline'" slot="start"></ion-icon>
+              <ion-input
+                name="password"
+                [type]="showPassword ? 'text' : 'password'"
+                autocomplete="new-password"
+                [(ngModel)]="formData.password"
+                label="Password"
+                labelPlacement="floating"
+                required
+                minlength="6"
+              ></ion-input>
+              <ion-button
+                fill="clear"
+                slot="end"
+                size="small"
+                type="button"
+                (click)="togglePassword()"
+                aria-label="Toggle password visibility"
+              >
+                <ion-icon [name]="showPassword ? 'eyeOffOutline' : 'eyeOutline'"></ion-icon>
+              </ion-button>
+            </ion-item>
+  
+            <div class="actions">
+              <ion-button
+                expand="block"
+                type="submit"
+                [disabled]="loading || !f.form.valid"
+                class="primary-btn"
+              >
+                <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+                <span *ngIf="!loading">Register</span>
+              </ion-button>
+  
+              <ion-button
+                expand="block"
+                fill="clear"
+                routerLink="/login"
+                class="link-btn"
+              >
+                I have an account
+              </ion-button>
+            </div>
+          </form>
+        </ion-card-content>
+      </ion-card>
+  
+      <!-- optional footer note -->
+      <div class="foot-note">
+        By creating an account you agree to our
+        <a href="#" (click)="$event.preventDefault()">Terms</a>
+        &amp;
+        <a href="#" (click)="$event.preventDefault()">Privacy</a>.
+      </div>
+    </div>
+  </ion-content>
+  

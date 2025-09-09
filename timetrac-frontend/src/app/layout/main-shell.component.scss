@@ -1,0 +1,174 @@
+/* ====== Theme tokens (tweak to your taste) ====== */
+:host {
+    --brand-1: #1d3557;
+    --brand-2: #457b9d;
+    --brand-3: #a8dadc;
+  
+    --glass-bg: rgba(255, 255, 255, 0.82);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --menu-glass: rgba(255, 255, 255, 0.16);
+    --menu-hover: rgba(255, 255, 255, 0.22);
+  
+    --text-strong: #1e1e1e;
+    --text-dim: #4a4a4a;
+  
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.18);
+  }
+  
+  /* ====== Header (glassmorphism) ====== */
+  .app-header .glass {
+    --background: var(--glass-bg);
+    backdrop-filter: saturate(1.2) blur(10px);
+    --border-width: 0 0 1px 0;
+    --border-color: var(--glass-border);
+    position: relative;
+  
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3));
+      opacity: 0.9;
+    }
+  
+    ion-title {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+  
+      .brand {
+        color: var(--brand-1);
+        font-weight: 900;
+        letter-spacing: .2px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+  
+        .logo-dot {
+          width: 12px; height: 12px; border-radius: 50%;
+          background: radial-gradient(circle at 30% 30%, var(--brand-3), var(--brand-2));
+          box-shadow: 0 0 0 3px rgba(69, 123, 157, .15);
+        }
+      }
+      .brand-sub {
+        color: var(--text-dim);
+        font-weight: 600;
+        opacity: .9;
+        font-size: 14px;
+      }
+    }
+  
+    .user-chip {
+      margin-right: 6px;
+      background: rgba(69, 123, 157, 0.09);
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 1px rgba(69, 123, 157, .19);
+  
+      ion-avatar {
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 0 0 2px rgba(69, 123, 157, 0.18);
+      }
+      .email {
+        max-width: 180px;
+        display: inline-block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  
+    .logout-btn {
+      color: var(--brand-1);
+      font-weight: 700;
+      transition: transform .15s ease, opacity .15s ease;
+  
+      &:active { transform: translateY(1px); opacity: .85; }
+    }
+  }
+  
+  /* ====== Split-pane sizing ====== */
+  .app-split {
+    --side-width: 280px;
+  }
+  
+  /* ====== Sidebar (frosted) ====== */
+  .frosted-menu {
+    box-shadow: var(--shadow-lg);
+    border-right: 1px solid rgba(0, 0, 0, 0.04);
+  }
+  
+  .menu-bg {
+    --background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 55%, var(--brand-3) 105%);
+    color: #fff;
+    padding-top: 18px;
+  
+    .menu-header {
+      padding: 0 14px 8px;
+      .menu-title {
+        font-weight: 800;
+        letter-spacing: .3px;
+      }
+      .menu-sub {
+        opacity: .85;
+        font-size: 12px;
+        margin-top: 2px;
+      }
+    }
+  
+    .menu-list {
+      margin-top: 8px;
+    }
+  
+    .menu-item {
+      --background: transparent;
+      --color: #eef6f8;
+      border-radius: 12px;
+      margin: 6px 10px;
+      transition: transform .12s ease, background .18s ease, box-shadow .18s ease;
+  
+      ion-icon {
+        font-size: 20px;
+        color: #fff;
+        opacity: .96;
+        margin-right: 6px;
+      }
+  
+      &:hover {
+        background: var(--menu-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 22px rgba(0,0,0,.18);
+      }
+  
+      &.active {
+        background: var(--menu-glass);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+        --color: #fff;
+      }
+  
+      &.danger {
+        --color: #ffecec;
+        ion-icon { color: #ffecec; }
+        &:hover {
+          background: rgba(255, 99, 99, 0.22);
+          box-shadow: 0 6px 22px rgba(255, 99, 99, 0.25);
+        }
+      }
+    }
+  
+    .menu-divider {
+      height: 1px;
+      margin: 10px 12px;
+      background: rgba(255,255,255,.25);
+      border-radius: 10px;
+    }
+  }
+  
+  /* Avatar quality */
+  ion-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  

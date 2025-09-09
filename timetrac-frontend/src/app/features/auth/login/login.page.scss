@@ -1,0 +1,95 @@
+/* Nice gradient background */
+.login-bg {
+    --background: linear-gradient(135deg, #1d3557 0%, #457b9d 50%, #a8dadc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Page header tweaks */
+  .login-header ion-toolbar {
+    --background: transparent;
+    --border-width: 0;
+    color: #fff;
+  
+    ion-title {
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+  
+    .brand-badge {
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      font-size: 12px;
+    }
+  }
+  
+  /* Centered card wrapper */
+  .login-wrap {
+    width: 100%;
+    max-width: 420px;
+    margin: 32px auto;
+    padding: 0 16px;
+  }
+  
+  /* Card styling */
+  .login-card {
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+    --background: rgba(255, 255, 255, 0.96);
+  
+    ion-card-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+  
+    ion-card-subtitle {
+      opacity: 0.8;
+    }
+  }
+  
+  /* Inputs */
+  .field {
+    margin-top: 14px;
+  
+    ion-icon {
+      font-size: 20px;
+      opacity: 0.85;
+      margin-right: 6px;
+    }
+  }
+  
+  /* Actions */
+  .actions {
+    margin-top: 20px;
+  
+    .primary-btn {
+      --border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      height: 48px;
+    }
+  
+    .link-btn {
+      margin-top: 6px;
+      color: #1d3557;
+      font-weight: 600;
+    }
+  }
+  
+  /* Footer note */
+  .foot-note {
+    margin-top: 16px;
+    text-align: center;
+    color: #eef6f8;
+  
+    a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  }
+  

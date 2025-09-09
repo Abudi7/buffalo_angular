@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: timetrac
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: apppass
+    ports:
+      - "5433:5432"   # نربط على 5433 محلياً
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+volumes:
+  dbdata:

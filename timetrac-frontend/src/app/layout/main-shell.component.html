@@ -1,83 +1,66 @@
-<!-- Glass header with gradient underline -->
-<ion-header class="app-header">
-  <ion-toolbar class="glass">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+<!-- Modern floating navigation -->
+<div class="modern-shell">
+  <!-- Floating navigation menu -->
+  <div
+    class="floating-nav"
+    (mouseenter)="showNav = true"
+    (mouseleave)="showNav = false"
+  >
+    <div class="nav-trigger">
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
 
-    <ion-title>
-      <span class="brand"> <span class="logo-dot"></span> TimeTrac </span>
-      <span class="brand-sub">Dashboard</span>
-    </ion-title>
-
-    <ion-buttons slot="end">
-      <ion-button
-        fill="clear"
-        (click)="cycleLang()"
-        aria-label="Switch language"
-      >
-        <ion-icon slot="icon-only" [name]="'globe-outline'"></ion-icon>
-      </ion-button>
-      <ng-container *ngIf="userEmail$ | async as email">
-        <ion-chip class="user-chip">
-          <ion-avatar>
-            <img [src]="avatarFor(email)" alt="avatar" />
-          </ion-avatar>
-          <ion-label class="email">{{ email }}</ion-label>
-        </ion-chip>
-
-        <ion-button fill="clear" class="logout-btn" (click)="onLogout()">
-          <ion-icon slot="start" [name]="'logOutOutline'"></ion-icon>
-          Logout
-        </ion-button>
-      </ng-container>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-<!-- Split pane: animated frosted sidebar + content area -->
-<ion-split-pane contentId="main-content" class="app-split">
-  <ion-menu contentId="main-content" class="frosted-menu animated-menu">
-    <ion-content class="menu-bg">
-      <div class="menu-header animated-menu-header">
-        <div class="menu-title">Navigation</div>
-        <div class="menu-sub">Quick access</div>
+    <div class="nav-menu" [class.show]="showNav">
+      <div class="nav-header">
+        <div class="logo">
+          <div class="logo-icon">⏱️</div>
+          <span class="logo-text">TimeTrac</span>
+        </div>
       </div>
 
-      <ion-list lines="none" class="menu-list animated-menu-list">
-        <ion-item
-          routerLink="/home"
-          routerDirection="root"
-          routerLinkActive="active"
-          detail="false"
-          class="menu-item animated-menu-item"
-          [style.animation-delay]="'0.1s'"
-        >
-          <ion-icon slot="start" [name]="'homeOutline'"></ion-icon>
-          <ion-label>Home</ion-label>
-        </ion-item>
+      <div class="nav-items">
+        <a routerLink="/home" routerLinkActive="active" class="nav-item">
+          <ion-icon name="home-outline"></ion-icon>
+          <span>Home</span>
+        </a>
 
-        <ion-item
-          routerLink="/settings"
-          routerDirection="root"
-          detail="false"
-          class="menu-item animated-menu-item"
-          [style.animation-delay]="'0.2s'"
-        >
-          <ion-icon slot="start" [name]="'settingsOutline'"></ion-icon>
-          <ion-label>Settings</ion-label>
-        </ion-item>
+        <a routerLink="/settings" routerLinkActive="active" class="nav-item">
+          <ion-icon name="settings-outline"></ion-icon>
+          <span>Settings</span>
+        </a>
 
-        <div class="menu-divider animated-divider" [style.animation-delay]="'0.3s'"></div>
+        <div class="nav-divider"></div>
 
-        <ion-item detail="false" class="menu-item danger animated-menu-item" (click)="onLogout()" [style.animation-delay]="'0.4s'">
-          <ion-icon slot="start" [name]="'logOutOutline'"></ion-icon>
-          <ion-label>Logout</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-content>
-  </ion-menu>
+        <div class="nav-item user-info" *ngIf="userEmail$ | async as email">
+          <ion-avatar class="user-avatar">
+            <img [src]="avatarFor(email)" alt="avatar" />
+          </ion-avatar>
+          <div class="user-details">
+            <span class="user-email">{{ email }}</span>
+            <span class="user-status">Online</span>
+          </div>
+        </div>
 
-  <!-- Routed pages render here -->
-  <ion-router-outlet id="main-content"></ion-router-outlet>
-</ion-split-pane>
+        <button class="nav-item logout-btn" (click)="onLogout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <span>Logout</span>
+        </button>
+      </div>
+
+      <div class="nav-footer">
+        <button class="lang-btn" (click)="cycleLang()">
+          <ion-icon name="globe-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content area -->
+  <div class="main-content">
+    <ion-router-outlet></ion-router-outlet>
+  </div>
+</div>

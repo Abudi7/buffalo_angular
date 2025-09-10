@@ -4,23 +4,9 @@ import { Router, RouterModule } from '@angular/router';
 
 // Standalone Ionic components
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonMenuButton,
-  IonSplitPane,
-  IonMenu,
-  IonContent,
-  IonList,
-  IonItem,
   IonRouterOutlet,
-  IonChip,
   IonAvatar,
-  IonLabel,
-  IonButton,
   IonIcon,
-  IonListHeader,
 } from '@ionic/angular/standalone';
 
 // Ionic services
@@ -38,9 +24,9 @@ import { I18nService } from '../core/i18n.service';
   imports: [
     CommonModule,
     RouterModule,
-    IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton,
-    IonSplitPane, IonMenu, IonContent, IonList, IonItem, IonRouterOutlet,
-    IonChip, IonAvatar, IonLabel, IonButton, IonIcon,
+    IonRouterOutlet,
+    IonAvatar,
+    IonIcon,
   ],
   templateUrl: './main-shell.component.html',
   styleUrls: ['./main-shell.component.scss'],
@@ -53,6 +39,7 @@ export class MainShellComponent {
   private i18n = inject(I18nService);
 
   userEmail$ = this.store.select(AuthState.user).pipe(map(u => u?.email ?? ''));
+  showNav = false;
 
   constructor() {}
 

@@ -14,6 +14,13 @@ on:
           - production
           - staging
 
+# Add permissions for the entire workflow
+permissions:
+  contents: write
+  packages: write
+  issues: write
+  pull-requests: write
+
 env:
   NODE_VERSION: "20"
   GO_VERSION: "1.21"
@@ -161,12 +168,10 @@ jobs:
           # Add changelog generation logic here
 
       - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ github.run_number }}
-          release_name: Release v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
           body: |
             ## Changes in this Release
             ${{ steps.changelog.outputs.changelog }}
@@ -182,3 +187,6 @@ jobs:
             - Health checks passed
           draft: false
           prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

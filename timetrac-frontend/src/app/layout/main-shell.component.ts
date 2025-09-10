@@ -1,26 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
 // Standalone Ionic components
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonMenuButton,
-  IonSplitPane,
-  IonMenu,
-  IonContent,
-  IonList,
-  IonItem,
   IonRouterOutlet,
-  IonChip,
   IonAvatar,
-  IonLabel,
-  IonButton,
   IonIcon,
-  IonListHeader,
 } from '@ionic/angular/standalone';
 
 // Ionic services
@@ -30,6 +16,7 @@ import { Store } from '@ngxs/store';
 import { AuthState } from '../state/auth.state';
 import { map } from 'rxjs/operators';
 import { Logout } from '../state/auth.actions';
+import { I18nService } from '../core/i18n.service';
 
 @Component({
   selector: 'app-main-shell',
@@ -37,22 +24,24 @@ import { Logout } from '../state/auth.actions';
   imports: [
     CommonModule,
     RouterModule,
-    IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton,
-    IonSplitPane, IonMenu, IonContent, IonList, IonItem, IonRouterOutlet,
-    IonChip, IonAvatar, IonLabel, IonButton, IonIcon,
+    IonRouterOutlet,
+    IonAvatar,
+    IonIcon,
   ],
   templateUrl: './main-shell.component.html',
   styleUrls: ['./main-shell.component.scss'],
 })
 export class MainShellComponent {
-  userEmail$ = this.store.select(AuthState.user).pipe(map(u => u?.email ?? ''));
+  private store = inject(Store);
+  private router = inject(Router);
+  private menuCtrl = inject(MenuController);
+  private toast = inject(ToastController);
+  private i18n = inject(I18nService);
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private menuCtrl: MenuController,
-    private toast: ToastController
-  ) {}
+  userEmail$ = this.store.select(AuthState.user).pipe(map(u => u?.email ?? ''));
+  showNav = false;
+
+  constructor() {}
 
   avatarFor(email: string) {
     const seed = encodeURIComponent(email || 'user');
@@ -72,5 +61,12 @@ export class MainShellComponent {
         this.router.navigateByUrl('/login');
       },
     });
+  }
+
+  cycleLang() {
+    const order: ('en'|'ar'|'de')[] = ['en','ar','de'];
+    const current = this.i18n.lang;
+    const next = order[(order.indexOf(current) + 1) % order.length];
+    this.i18n.setLang(next);
   }
 }

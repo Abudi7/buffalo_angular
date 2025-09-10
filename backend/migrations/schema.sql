@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict Ian743YOSK1mr8UIOUJbHDAUmSGEVIqE2hQtttIHJvysKRk8LbSqooUbL75Bj13
+\restrict qZZbFMFg5xcc2eZ5b3ElYv6qFyvckOhgdAKzKg3c83RKBA5LWzFaWloJdUmm3K7
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 16.10 (Homebrew)
@@ -77,7 +77,11 @@ CREATE TABLE public.timetrac (
     end_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    tags text[] DEFAULT '{}'::text[] NOT NULL
+    tags text[] DEFAULT '{}'::text[] NOT NULL,
+    location_lat numeric,
+    location_lng numeric,
+    location_addr text,
+    photo_data text
 );
 
 
@@ -170,5 +174,5 @@ ALTER TABLE ONLY public.auth_tokens
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Ian743YOSK1mr8UIOUJbHDAUmSGEVIqE2hQtttIHJvysKRk8LbSqooUbL75Bj13
+\unrestrict qZZbFMFg5xcc2eZ5b3ElYv6qFyvckOhgdAKzKg3c83RKBA5LWzFaWloJdUmm3K7
 

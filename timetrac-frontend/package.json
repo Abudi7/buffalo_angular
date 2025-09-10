@@ -7,9 +7,13 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "icons": "node scripts/generate-icons.js",
+    "ios:build": "npm run build:prod && npx cap sync ios",
+    "ios:open": "npx cap open ios"
   },
   "private": true,
   "dependencies": {
@@ -22,14 +26,17 @@
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.0.0",
     "@capacitor/app": "7.1.0",
-    "@capacitor/core": "7.4.3",
+    "@capacitor/camera": "^7.0.2",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/geolocation": "^7.1.5",
     "@capacitor/haptics": "7.0.2",
-    "@capacitor/keyboard": "7.0.3",
+    "@capacitor/ios": "^7.4.3",
+    "@capacitor/keyboard": "^7.0.3",
     "@capacitor/status-bar": "7.0.3",
     "@ionic/angular": "^8.7.3",
     "@ngxs/storage-plugin": "^20.1.0",
     "@ngxs/store": "^20.1.0",
-    "ionicons": "^7.0.0",
+    "ionicons": "^7.4.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
@@ -43,7 +50,7 @@
     "@angular/cli": "^20.0.0",
     "@angular/compiler-cli": "^20.0.0",
     "@angular/language-service": "^20.0.0",
-    "@capacitor/cli": "7.4.3",
+    "@capacitor/cli": "^7.4.3",
     "@ionic/angular-toolkit": "^12.0.0",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
@@ -60,6 +67,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "rxjs": "^7.8.2",
+    "sharp": "^0.34.3",
     "typescript": "~5.8.0"
   },
   "description": "An Ionic project"

@@ -1,174 +1,338 @@
-/* ====== Theme tokens (tweak to your taste) ====== */
+/* ====== Modern Design Variables ====== */
 :host {
-    --brand-1: #1d3557;
-    --brand-2: #457b9d;
-    --brand-3: #a8dadc;
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary: #8b5cf6;
+  --accent: #06b6d4;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
   
-    --glass-bg: rgba(255, 255, 255, 0.82);
-    --glass-border: rgba(0, 0, 0, 0.06);
-    --menu-glass: rgba(255, 255, 255, 0.16);
-    --menu-hover: rgba(255, 255, 255, 0.22);
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
   
-    --text-strong: #1e1e1e;
-    --text-dim: #4a4a4a;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
   
-    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.18);
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* ====== Modern Shell Layout ====== */
+.modern-shell {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  overflow: hidden;
+}
+
+/* ====== Floating Navigation ====== */
+.floating-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+.nav-trigger {
+  position: relative;
+  z-index: 1001;
+  width: 3rem;
+  height: 3rem;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  
+  span {
+    width: 1.25rem;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 1px;
+    transition: all 0.3s ease;
+  }
+}
+
+.nav-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16rem;
+  height: 100vh;
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  
+  &.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.nav-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.logo-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.nav-items {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  ion-icon {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
   }
   
-  /* ====== Header (glassmorphism) ====== */
-  .app-header .glass {
-    --background: var(--glass-bg);
-    backdrop-filter: saturate(1.2) blur(10px);
-    --border-width: 0 0 1px 0;
-    --border-color: var(--glass-border);
-    position: relative;
-  
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3));
-      opacity: 0.9;
-    }
-  
-    ion-title {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-  
-      .brand {
-        color: var(--brand-1);
-        font-weight: 900;
-        letter-spacing: .2px;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-  
-        .logo-dot {
-          width: 12px; height: 12px; border-radius: 50%;
-          background: radial-gradient(circle at 30% 30%, var(--brand-3), var(--brand-2));
-          box-shadow: 0 0 0 3px rgba(69, 123, 157, .15);
-        }
-      }
-      .brand-sub {
-        color: var(--text-dim);
-        font-weight: 600;
-        opacity: .9;
-        font-size: 14px;
-      }
-    }
-  
-    .user-chip {
-      margin-right: 6px;
-      background: rgba(69, 123, 157, 0.09);
-      border-radius: 999px;
-      box-shadow: inset 0 0 0 1px rgba(69, 123, 157, .19);
-  
-      ion-avatar {
-        border-radius: 50%;
-        overflow: hidden;
-        box-shadow: 0 0 0 2px rgba(69, 123, 157, 0.18);
-      }
-      .email {
-        max-width: 180px;
-        display: inline-block;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-    }
-  
-    .logout-btn {
-      color: var(--brand-1);
-      font-weight: 700;
-      transition: transform .15s ease, opacity .15s ease;
-  
-      &:active { transform: translateY(1px); opacity: .85; }
+  &:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    
+    ion-icon {
+      color: var(--primary);
     }
   }
   
-  /* ====== Split-pane sizing ====== */
-  .app-split {
-    --side-width: 280px;
-  }
-  
-  /* ====== Sidebar (frosted) ====== */
-  .frosted-menu {
-    box-shadow: var(--shadow-lg);
-    border-right: 1px solid rgba(0, 0, 0, 0.04);
-  }
-  
-  .menu-bg {
-    --background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 55%, var(--brand-3) 105%);
-    color: #fff;
-    padding-top: 18px;
-  
-    .menu-header {
-      padding: 0 14px 8px;
-      .menu-title {
-        font-weight: 800;
-        letter-spacing: .3px;
-      }
-      .menu-sub {
-        opacity: .85;
-        font-size: 12px;
-        margin-top: 2px;
-      }
-    }
-  
-    .menu-list {
-      margin-top: 8px;
-    }
-  
-    .menu-item {
-      --background: transparent;
-      --color: #eef6f8;
-      border-radius: 12px;
-      margin: 6px 10px;
-      transition: transform .12s ease, background .18s ease, box-shadow .18s ease;
-  
-      ion-icon {
-        font-size: 20px;
-        color: #fff;
-        opacity: .96;
-        margin-right: 6px;
-      }
-  
-      &:hover {
-        background: var(--menu-hover);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 22px rgba(0,0,0,.18);
-      }
-  
-      &.active {
-        background: var(--menu-glass);
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
-        --color: #fff;
-      }
-  
-      &.danger {
-        --color: #ffecec;
-        ion-icon { color: #ffecec; }
-        &:hover {
-          background: rgba(255, 99, 99, 0.22);
-          box-shadow: 0 6px 22px rgba(255, 99, 99, 0.25);
-        }
-      }
-    }
-  
-    .menu-divider {
-      height: 1px;
-      margin: 10px 12px;
-      background: rgba(255,255,255,.25);
-      border-radius: 10px;
+  &.active {
+    background: var(--primary);
+    color: white;
+    
+    ion-icon {
+      color: white;
     }
   }
   
-  /* Avatar quality */
-  ion-avatar img {
+  &.logout-btn {
+    color: var(--danger);
+    
+    ion-icon {
+      color: var(--danger);
+    }
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+  }
+}
+
+.nav-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 0.5rem 1.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
+  margin: 0.5rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-light);
+}
+
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  
+  img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
   }
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.user-email {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.user-status {
+  font-size: 0.75rem;
+  color: var(--success);
+  font-weight: 500;
+}
+
+.nav-footer {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.lang-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  ion-icon {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+  }
+  
+  &:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    
+    ion-icon {
+      color: white;
+    }
+  }
+}
+
+/* ====== Main Content ====== */
+.main-content {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* ====== Responsive Design ====== */
+@media (max-width: 768px) {
+  .floating-nav {
+    padding: 0.5rem;
+  }
+  
+  .nav-menu {
+    width: 14rem;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+}
+
+/* ====== Animations ====== */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.nav-item {
+  animation: slideInLeft 0.3s ease-out both;
+  
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+  &:nth-child(4) { animation-delay: 0.4s; }
+}
   

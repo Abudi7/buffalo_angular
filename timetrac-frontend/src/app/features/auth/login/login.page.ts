@@ -1,5 +1,5 @@
 // src/app/features/auth/login/login.page.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 // 👇 Import RouterModule so routerLink works in the template
@@ -27,11 +27,11 @@ export class LoginPage {
   loading = false;
   showPassword = false;
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private toast: ToastController
-  ) {}
+  private store = inject(Store);
+  private router = inject(Router);
+  private toast = inject(ToastController);
+
+  constructor() {}
 
   // Toggle password visibility
   togglePassword() {
@@ -54,9 +54,13 @@ export class LoginPage {
       },
       error: async (err) => {
         this.loading = false;
+        // Log full error to help diagnose iOS networking/CORS issues
+        console.error('Login error:', err);
+        const backendMsg = err?.error?.error || err?.message || 'Login failed';
+        const status = err?.status ? ` (status ${err.status})` : '';
         const t = await this.toast.create({
-          message: err?.error?.error || 'Login failed',
-          duration: 2000,
+          message: `${backendMsg}${status}`,
+          duration: 2500,
           color: 'danger',
         });
         t.present();

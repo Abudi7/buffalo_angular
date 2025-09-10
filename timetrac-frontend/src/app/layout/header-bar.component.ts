@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton,
   IonChip, IonAvatar, IonLabel, IonButton
@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngxs/store';
 import { AuthState } from '../state/auth.state';
 import { map } from 'rxjs/operators';
+import { I18nService } from '../core/i18n.service';
 import { Logout } from '../state/auth.actions';
 
 /**
@@ -44,6 +45,9 @@ import { Logout } from '../state/auth.actions';
               </ion-avatar>
               <ion-label>{{ email }}</ion-label>
             </ion-chip>
+            <ion-button fill="clear" (click)="cycleLang()" aria-label="Switch language">
+              🌐
+            </ion-button>
             <ion-button fill="clear" (click)="onLogout()">Logout</ion-button>
           </ng-container>
         </ion-buttons>
@@ -53,9 +57,9 @@ import { Logout } from '../state/auth.actions';
 })
 export class HeaderBarComponent {
   @Input() title = 'Dashboard';
+  private store = inject(Store);
+  private i18n = inject(I18nService);
   email$ = this.store.select(AuthState.user).pipe(map(u => u?.email ?? ''));
-
-  constructor(private store: Store) {}
 
   avatarFor(email: string) {
     const seed = encodeURIComponent(email || 'user');
@@ -64,5 +68,12 @@ export class HeaderBarComponent {
 
   onLogout() {
     this.store.dispatch(new Logout());
+  }
+
+  cycleLang() {
+    const order: ('en'|'ar'|'de')[] = ['en','ar','de'];
+    const current = this.i18n.lang;
+    const next = order[(order.indexOf(current) + 1) % order.length];
+    this.i18n.setLang(next);
   }
 }

@@ -35,22 +35,23 @@
   </ion-toolbar>
 </ion-header>
 
-<!-- Split pane: frosted sidebar + content area -->
+<!-- Split pane: animated frosted sidebar + content area -->
 <ion-split-pane contentId="main-content" class="app-split">
-  <ion-menu contentId="main-content" class="frosted-menu">
+  <ion-menu contentId="main-content" class="frosted-menu animated-menu">
     <ion-content class="menu-bg">
-      <div class="menu-header">
+      <div class="menu-header animated-menu-header">
         <div class="menu-title">Navigation</div>
         <div class="menu-sub">Quick access</div>
       </div>
 
-      <ion-list lines="none" class="menu-list">
+      <ion-list lines="none" class="menu-list animated-menu-list">
         <ion-item
           routerLink="/home"
           routerDirection="root"
           routerLinkActive="active"
           detail="false"
-          class="menu-item"
+          class="menu-item animated-menu-item"
+          [style.animation-delay]="'0.1s'"
         >
           <ion-icon slot="start" [name]="'homeOutline'"></ion-icon>
           <ion-label>Home</ion-label>
@@ -60,15 +61,16 @@
           routerLink="/settings"
           routerDirection="root"
           detail="false"
-          class="menu-item"
+          class="menu-item animated-menu-item"
+          [style.animation-delay]="'0.2s'"
         >
           <ion-icon slot="start" [name]="'settingsOutline'"></ion-icon>
           <ion-label>Settings</ion-label>
         </ion-item>
 
-        <div class="menu-divider"></div>
+        <div class="menu-divider animated-divider" [style.animation-delay]="'0.3s'"></div>
 
-        <ion-item detail="false" class="menu-item danger" (click)="onLogout()">
+        <ion-item detail="false" class="menu-item danger animated-menu-item" (click)="onLogout()" [style.animation-delay]="'0.4s'">
           <ion-icon slot="start" [name]="'logOutOutline'"></ion-icon>
           <ion-label>Logout</ion-label>
         </ion-item>

@@ -7,6 +7,7 @@ type Lang = 'en' | 'ar' | 'de';
 const DICTS: Record<Lang, Record<string, string>> = {
   en: {
     app_title: 'TimeTrac',
+    welcome_message: 'Welcome to your productivity dashboard',
     track_time: 'Track Time',
     select_project_tags_note_color: 'Select project, tags, note & color',
     tags: 'Tags',
@@ -21,6 +22,7 @@ const DICTS: Record<Lang, Record<string, string>> = {
   },
   ar: {
     app_title: 'تايم ترك',
+    welcome_message: 'مرحباً بك في لوحة الإنتاجية',
     track_time: 'تتبع الوقت',
     select_project_tags_note_color: 'اختر المشروع، الوسوم، الملاحظة واللون',
     tags: 'الوسوم',
@@ -35,6 +37,7 @@ const DICTS: Record<Lang, Record<string, string>> = {
   },
   de: {
     app_title: 'TimeTrac',
+    welcome_message: 'Willkommen in Ihrem Produktivitäts-Dashboard',
     track_time: 'Zeit erfassen',
     select_project_tags_note_color: 'Projekt, Tags, Notiz & Farbe wählen',
     tags: 'Tags',

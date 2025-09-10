@@ -1,41 +1,87 @@
-<ion-content class="home-bg" [fullscreen]="true">
+<ion-content class="home-bg animated-content" [fullscreen]="true">
   <!-- Pull to refresh -->
   <ion-refresher slot="fixed" (ionRefresh)="load($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="left">
-      <div class="title">{{ t('app_title') }}</div>
-      <div class="subtitle">{{ today | date:'EEEE, MMM d' }}</div>
+  <!-- Animated Hero Section -->
+  <div class="hero animated-hero">
+    <div class="hero-background">
+      <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+      </div>
     </div>
-    <div class="right">
-      <ion-segment value="en" (ionChange)="onLangChange($event)">
-        <ion-segment-button value="en">EN</ion-segment-button>
-        <ion-segment-button value="ar">AR</ion-segment-button>
-        <ion-segment-button value="de">DE</ion-segment-button>
-      </ion-segment>
-      <ion-button fill="clear" class="refresh" (click)="load()">
-        <ion-icon [name]="'refresh-outline'"></ion-icon>
-        {{ t('refresh') }}
-      </ion-button>
-      <ion-button fill="outline" size="small" (click)="exportCsv()">
-        {{ t('export_csv') }}
-      </ion-button>
+    
+    <div class="hero-content">
+      <div class="left">
+        <div class="title animated-title">{{ t('app_title') }}</div>
+        <div class="subtitle animated-subtitle">{{ today | date:'EEEE, MMM d' }}</div>
+        <div class="welcome-text animated-text">{{ t('welcome_message') }}</div>
+      </div>
+      <div class="right">
+        <ion-segment value="en" (ionChange)="onLangChange($event)" class="animated-segment">
+          <ion-segment-button value="en">EN</ion-segment-button>
+          <ion-segment-button value="ar">AR</ion-segment-button>
+          <ion-segment-button value="de">DE</ion-segment-button>
+        </ion-segment>
+        <ion-button fill="clear" class="refresh animated-button" (click)="load()">
+          <ion-icon [name]="'refresh-outline'"></ion-icon>
+          {{ t('refresh') }}
+        </ion-button>
+        <ion-button fill="outline" size="small" class="animated-button" (click)="exportCsv()">
+          {{ t('export_csv') }}
+        </ion-button>
+      </div>
     </div>
   </div>
 
-  <!-- Big live clock (only for running entry) -->
-  <div class="clock">
-    <ion-icon [name]="'time-outline'"></ion-icon>
-    <span>{{ hhmmss(elapsedMs) }}</span>
+  <!-- Image Slider Section -->
+  <div class="slider-section">
+    <div class="animated-slider">
+      <div class="slider-container" [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
+        <div 
+          *ngFor="let slide of slides; let i = index" 
+          class="slide-content" 
+          [class.active]="i === currentSlide">
+          <div class="slide-image" [style.background-image]="'url(' + slide.image + ')'">
+            <div class="slide-overlay">
+              <h2 class="slide-title">{{ slide.title }}</h2>
+              <p class="slide-description">{{ slide.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slider Navigation -->
+    <div class="slider-nav">
+      <div class="nav-dots">
+        <span 
+          *ngFor="let slide of slides; let i = index" 
+          class="dot" 
+          [class.active]="i === currentSlide"
+          (click)="goToSlide(i)">
+        </span>
+      </div>
+    </div>
   </div>
 
-  <!-- Controls + List -->
-  <div class="controls">
-    <!-- Control card -->
-    <ion-card class="card control-card">
+  <!-- Animated Live Clock -->
+  <div class="clock animated-clock" [class.pulsing]="!!runningEntry">
+    <div class="clock-icon">
+      <ion-icon [name]="'time-outline'"></ion-icon>
+    </div>
+    <span class="clock-time">{{ hhmmss(elapsedMs) }}</span>
+    <div class="clock-glow" *ngIf="!!runningEntry"></div>
+  </div>
+
+  <!-- Animated Controls + List -->
+  <div class="controls animated-controls">
+    <!-- Animated Control card -->
+    <ion-card class="card control-card animated-card" [class.card-hover]="true">
       <ion-card-header>
         <ion-card-title>{{ t('track_time') }}</ion-card-title>
         <ion-card-subtitle
@@ -122,30 +168,31 @@
       </ion-card-content>
     </ion-card>
 
-    <!-- Entries list -->
-    <ion-card class="card list-card">
+    <!-- Animated Entries list -->
+    <ion-card class="card list-card animated-card" [class.card-hover]="true">
       <ion-card-header>
-        <ion-card-title>{{ t('entries') }}</ion-card-title>
-        <ion-card-subtitle>{{ t('newest_first') }}</ion-card-subtitle>
+        <ion-card-title class="animated-title">{{ t('entries') }}</ion-card-title>
+        <ion-card-subtitle class="animated-subtitle">{{ t('newest_first') }}</ion-card-subtitle>
       </ion-card-header>
 
       <ion-card-content>
         <ng-container *ngIf="loading; else entriesTpl">
-          <ion-item class="skeleton" *ngFor="let i of [1,2,3]">
+          <ion-item class="skeleton animated-skeleton" *ngFor="let i of [1,2,3]">
             <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
           </ion-item>
         </ng-container>
 
         <ng-template #entriesTpl>
-          <div *ngIf="entries.length === 0" class="empty">
+          <div *ngIf="entries.length === 0" class="empty animated-empty">
             <ion-icon [name]="'document-text-outline'"></ion-icon>
             <p>{{ t('no_entries') }}</p>
           </div>
 
-          <ion-list lines="inset">
+          <ion-list lines="inset" class="animated-list">
             <ion-item
-              class="entry"
-              *ngFor="let e of entries; trackBy: trackById"
+              class="entry animated-entry"
+              *ngFor="let e of entries; trackBy: trackById; let i = index"
+              [style.animation-delay]="(i * 0.1) + 's'"
             >
               <div slot="start" class="dot" [style.background]="e.color"></div>
               <ion-label>

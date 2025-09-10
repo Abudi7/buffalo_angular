@@ -110,14 +110,42 @@ export class HomePage implements OnInit, OnDestroy {
 
   async addPhoto(): Promise<void> {
     try {
+      console.log('Opening camera...');
+      
+      // Check if camera is available
+      const permissions = await Camera.checkPermissions();
+      console.log('Camera permissions:', permissions);
+      
+      if (permissions.camera === 'denied') {
+        console.log('Camera permission denied, requesting...');
+        const requestResult = await Camera.requestPermissions();
+        console.log('Camera permission request result:', requestResult);
+        
+        if (requestResult.camera === 'denied') {
+          console.error('Camera permission denied by user');
+          return;
+        }
+      }
+      
       const img = await Camera.getPhoto({
         resultType: CameraResultType.DataUrl,
         source: CameraSource.Prompt,
         quality: 60,
         allowEditing: false,
+        width: 800,
+        height: 600,
       });
+      
+      console.log('Photo captured successfully');
       this.photo_data = img.dataUrl || undefined;
-    } catch {}
+      
+      if (this.photo_data) {
+        console.log('Photo data saved, length:', this.photo_data.length);
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      // You could show a toast or alert here
+    }
   }
 
   start(): void {
@@ -219,6 +247,11 @@ export class HomePage implements OnInit, OnDestroy {
     this.tagInput = '';
   }
   removeTag(t: string): void { this.tags = this.tags.filter(x => x !== t); }
+
+  // Photo management
+  clearPhoto(): void {
+    this.photo_data = undefined;
+  }
 
   // CSV Export
   exportCsv(): void {

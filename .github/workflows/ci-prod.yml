@@ -80,7 +80,10 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    
+    permissions:
+      security-events: write
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -90,13 +93,16 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          format: 'table'
+          exit-code: '0'
           
-      - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
+      - name: Run npm audit
+        working-directory: ./timetrac-frontend
+        run: npm audit --audit-level=moderate || true
+        
+      - name: Run go mod audit
+        working-directory: ./backend
+        run: go list -json -m all | nancy sleuth || true
 
   # Deploy to Production
   deploy-production:

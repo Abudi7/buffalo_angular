@@ -103,13 +103,39 @@
   
   /* ====== Split-pane sizing ====== */
   .app-split {
+    --side-width: 0px; /* Hide menu by default */
+    transition: --side-width 0.3s ease;
+  }
+
+  /* Show menu on hover */
+  .app-split:hover {
     --side-width: 280px;
+  }
+
+  /* Make menu button area larger for easier hover */
+  ion-buttons[slot="start"] {
+    padding: 8px;
+    margin-left: -8px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+  }
+
+  ion-buttons[slot="start"]:hover {
+    background-color: rgba(0, 0, 0, 0.05);
   }
   
   /* ====== Sidebar (frosted) ====== */
   .frosted-menu {
     box-shadow: var(--shadow-lg);
     border-right: 1px solid rgba(0, 0, 0, 0.04);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* Hide menu content when not hovered */
+  .app-split:not(:hover) .frosted-menu {
+    opacity: 0;
+    transform: translateX(-20px);
+    pointer-events: none;
   }
   
   .menu-bg {

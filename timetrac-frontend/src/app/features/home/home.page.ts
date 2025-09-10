@@ -111,6 +111,17 @@ export class HomePage implements OnInit, OnDestroy {
     try {
       console.log('Opening camera...');
       
+      // Check if we're in a simulator or web environment
+      const isSimulator = window.navigator.userAgent.includes('Simulator') || 
+                         window.navigator.userAgent.includes('iPhone Simulator') ||
+                         window.navigator.userAgent.includes('iPad Simulator');
+      
+      if (isSimulator) {
+        console.log('Running in simulator, using file input fallback');
+        this.openFileInput();
+        return;
+      }
+      
       // Check if camera is available
       const permissions = await Camera.checkPermissions();
       console.log('Camera permissions:', permissions);
@@ -122,6 +133,8 @@ export class HomePage implements OnInit, OnDestroy {
         
         if (requestResult.camera === 'denied') {
           console.error('Camera permission denied by user');
+          // Fallback to file input
+          this.openFileInput();
           return;
         }
       }
@@ -143,8 +156,33 @@ export class HomePage implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Camera error:', error);
-      // You could show a toast or alert here
+      // Fallback to file input
+      this.openFileInput();
     }
+  }
+
+  /**
+   * Fallback method to open file input for photo selection
+   */
+  private openFileInput(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment'; // Prefer back camera on mobile
+    
+    input.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.photo_data = e.target.result;
+          console.log('Photo loaded from file input');
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    
+    input.click();
   }
 
   start(): void {
@@ -298,7 +336,8 @@ export class HomePage implements OnInit, OnDestroy {
    * Generate Google Maps embed URL for the given coordinates
    */
   getMapUrl(lat: number, lng: number): string {
-    return `https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dgsWUxO4kzJhYk&center=${lat},${lng}&zoom=15&maptype=roadmap`;
+    // Use OpenStreetMap for reliable display without API key
+    return `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.01},${lat-0.01},${lng+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lng}`;
   }
 
   /**

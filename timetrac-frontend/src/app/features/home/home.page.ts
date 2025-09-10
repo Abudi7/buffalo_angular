@@ -1,3 +1,6 @@
+// HomePage renders the timer controls and the latest time entries list.
+// It encapsulates minimal state and delegates persistence to TimeService.
+// The component favors clarity over micro-optimizations for maintainability.
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -5,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import {
   IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
   IonItem, IonLabel, IonSelect, IonSelectOption, IonButton, IonIcon, IonTextarea,
-  IonList, IonNote, IonChip, IonInput, IonSpinner, IonSkeletonText,
+  IonList, IonChip, IonSkeletonText,
   IonRefresher, IonRefresherContent
 } from '@ionic/angular/standalone';
 
@@ -19,7 +22,7 @@ import { TimeService, TimeEntry } from '../../core/time.service';
     CommonModule, FormsModule,
     IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
     IonItem, IonLabel, IonSelect, IonSelectOption, IonButton, IonIcon, IonTextarea,
-    IonList, IonNote, IonChip, IonInput, IonSpinner, IonSkeletonText,
+    IonList, IonChip, IonSkeletonText,
     IonRefresher, IonRefresherContent
   ],
   templateUrl: './home.page.html',
@@ -160,11 +163,38 @@ export class HomePage implements OnInit, OnDestroy {
 
   // Tags
   addTag(): void {
-    const v = (this.tagInput || '').trim();
-    if (v && !this.tags.includes(v)) this.tags = [...this.tags, v];
+    const value = (this.tagInput || '').trim();
+    if (value && !this.tags.includes(value)) this.tags = [...this.tags, value];
     this.tagInput = '';
   }
   removeTag(t: string): void { this.tags = this.tags.filter(x => x !== t); }
+
+  // CSV Export
+  exportCsv(): void {
+    const header = ['id','project','tags','note','color','start_at','end_at','created_at','updated_at'];
+    const rows = this.entries.map(e => [
+      e.id,
+      e.project || '',
+      (e.tags || []).join('|'),
+      (e.note || '').replace(/\n/g, ' '),
+      e.color || '',
+      e.start_at,
+      e.end_at || '',
+      e.created_at,
+      e.updated_at,
+    ]);
+    const csv = [header, ...rows]
+      .map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `timetrac-entries-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   trackById(_: number, e: TimeEntry) { return e.id; }
 }

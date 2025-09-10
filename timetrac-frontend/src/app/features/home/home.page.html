@@ -1,143 +1,175 @@
 <ion-content class="home-bg" [fullscreen]="true">
-    <!-- Pull to refresh -->
-    <ion-refresher slot="fixed" (ionRefresh)="load($event)">
-      <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
-  
-    <!-- Hero -->
-    <div class="hero">
-      <div class="left">
-        <div class="title">TimeTrac</div>
-        <div class="subtitle">{{ today | date:'EEEE, MMM d' }}</div>
-      </div>
-      <div class="right">
-        <ion-button fill="clear" class="refresh" (click)="load()">
-          <ion-icon [name]="'refreshOutline'"></ion-icon>
-          Refresh
-        </ion-button>
-      </div>
+  <!-- Pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="load($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="left">
+      <div class="title">TimeTrac</div>
+      <div class="subtitle">{{ today | date:'EEEE, MMM d' }}</div>
     </div>
-  
-    <!-- Big live clock (only for running entry) -->
-    <div class="clock">
-      <ion-icon [name]="'timeOutline'"></ion-icon>
-      <span>{{ hhmmss(elapsedMs) }}</span>
+    <div class="right">
+      <ion-button fill="clear" class="refresh" (click)="load()">
+        <ion-icon [name]="'refresh-outline'"></ion-icon>
+        Refresh
+      </ion-button>
+      <ion-button fill="outline" size="small" (click)="exportCsv()">
+        Export CSV
+      </ion-button>
     </div>
-  
-    <!-- Controls + List -->
-    <div class="controls">
-      <!-- Control card -->
-      <ion-card class="card control-card">
-        <ion-card-header>
-          <ion-card-title>Track Time</ion-card-title>
-          <ion-card-subtitle>Select project, tags, note & color</ion-card-subtitle>
-        </ion-card-header>
-  
-        <ion-card-content>
-          <!-- Project + color -->
-          <div class="row">
-            <ion-select interface="popover" [(ngModel)]="selectedProject" class="wide">
-              <ion-select-option *ngFor="let p of projects" [value]="p">{{ p }}</ion-select-option>
-            </ion-select>
-  
-            <div class="color">
-              <ion-icon [name]="'colorPaletteOutline'"></ion-icon>
-              <input type="color" [(ngModel)]="color" />
-            </div>
+  </div>
+
+  <!-- Big live clock (only for running entry) -->
+  <div class="clock">
+    <ion-icon [name]="'time-outline'"></ion-icon>
+    <span>{{ hhmmss(elapsedMs) }}</span>
+  </div>
+
+  <!-- Controls + List -->
+  <div class="controls">
+    <!-- Control card -->
+    <ion-card class="card control-card">
+      <ion-card-header>
+        <ion-card-title>Track Time</ion-card-title>
+        <ion-card-subtitle
+          >Select project, tags, note & color</ion-card-subtitle
+        >
+      </ion-card-header>
+
+      <ion-card-content>
+        <!-- Project + color -->
+        <div class="row">
+          <ion-select
+            interface="popover"
+            [(ngModel)]="selectedProject"
+            class="wide"
+          >
+            <ion-select-option *ngFor="let p of projects" [value]="p"
+              >{{ p }}</ion-select-option
+            >
+          </ion-select>
+
+          <div class="color">
+            <ion-icon [name]="'color-palette-outline'"></ion-icon>
+            <input type="color" [(ngModel)]="color" />
           </div>
-  
-          <!-- Tags -->
-          <div class="tags-box">
-            <div class="label">Tags</div>
-            <div class="tags">
-              <ion-chip *ngFor="let t of tags">
-                <ion-label>{{ t }}</ion-label>
-                <ion-icon name="close" (click)="removeTag(t)"></ion-icon>
-              </ion-chip>
-              <input
-                class="tag-input"
-                placeholder="Add tag and press Enter"
-                [(ngModel)]="tagInput"
-                (keyup.enter)="addTag()" />
-            </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="tags-box">
+          <div class="label">Tags</div>
+          <div class="tags">
+            <ion-chip *ngFor="let t of tags">
+              <ion-label>{{ t }}</ion-label>
+              <ion-icon name="close" (click)="removeTag(t)"></ion-icon>
+            </ion-chip>
+            <input
+              class="tag-input"
+              placeholder="Add tag and press Enter"
+              [(ngModel)]="tagInput"
+              (keyup.enter)="addTag()"
+            />
+            <ion-button size="small" (click)="addTag()">+</ion-button>
           </div>
-  
-          <!-- Note -->
-          <div class="note-box">
-            <div class="label">Note</div>
-            <ion-textarea autoGrow="true" [placeholder]="'What are you working on?'" [(ngModel)]="note"></ion-textarea>
+        </div>
+
+        <!-- Note -->
+        <div class="note-box">
+          <div class="label">Note</div>
+          <ion-textarea
+            autoGrow="true"
+            [placeholder]="'What are you working on?'"
+            [(ngModel)]="note"
+          ></ion-textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+          <ion-button
+            size="large"
+            color="success"
+            (click)="start()"
+            [disabled]="!!runningEntry"
+          >
+            <ion-icon slot="start" [name]="'play-circle-outline'"></ion-icon>
+            Start
+          </ion-button>
+          <ion-button
+            size="large"
+            color="danger"
+            (click)="stop()"
+            [disabled]="!runningEntry"
+          >
+            <ion-icon slot="start" [name]="'stop-circle-outline'"></ion-icon>
+            Stop
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Entries list -->
+    <ion-card class="card list-card">
+      <ion-card-header>
+        <ion-card-title>Entries</ion-card-title>
+        <ion-card-subtitle>Newest first</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ng-container *ngIf="loading; else entriesTpl">
+          <ion-item class="skeleton" *ngFor="let i of [1,2,3]">
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </ion-item>
+        </ng-container>
+
+        <ng-template #entriesTpl>
+          <div *ngIf="entries.length === 0" class="empty">
+            <ion-icon [name]="'document-text-outline'"></ion-icon>
+            <p>No entries yet. Start your first session!</p>
           </div>
-  
-          <!-- Actions -->
-          <div class="actions">
-            <ion-button size="large" color="success" (click)="start()" [disabled]="!!runningEntry">
-              <ion-icon slot="start" [name]="'playCircleOutline'"></ion-icon>
-              Start
-            </ion-button>
-            <ion-button size="large" color="danger" (click)="stop()" [disabled]="!runningEntry">
-              <ion-icon slot="start" [name]="'stopCircleOutline'"></ion-icon>
-              Stop
-            </ion-button>
-          </div>
-        </ion-card-content>
-      </ion-card>
-  
-      <!-- Entries list -->
-      <ion-card class="card list-card">
-        <ion-card-header>
-          <ion-card-title>Entries</ion-card-title>
-          <ion-card-subtitle>Newest first</ion-card-subtitle>
-        </ion-card-header>
-  
-        <ion-card-content>
-          <ng-container *ngIf="loading; else entriesTpl">
-            <ion-item class="skeleton" *ngFor="let i of [1,2,3]">
-              <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+
+          <ion-list lines="inset">
+            <ion-item
+              class="entry"
+              *ngFor="let e of entries; trackBy: trackById"
+            >
+              <div slot="start" class="dot" [style.background]="e.color"></div>
+              <ion-label>
+                <h3>
+                  {{ e.project || 'No project' }}
+                  <span class="pill" [style.border-color]="e.color">
+                    {{ durationPretty(e) }}
+                  </span>
+                </h3>
+
+                <p class="times">
+                  {{ e.start_at | date:'short' }}
+                  <ng-container *ngIf="e.end_at as end">
+                    → {{ end | date:'short' }}
+                  </ng-container>
+                </p>
+
+                <div class="chips" *ngIf="e.tags?.length">
+                  <ion-chip *ngFor="let t of e.tags"
+                    ><ion-label>{{ t }}</ion-label></ion-chip
+                  >
+                </div>
+
+                <div class="note" *ngIf="e.note">
+                  <ion-icon [name]="'document-text-outline'"></ion-icon>
+                  <span>{{ e.note }}</span>
+                </div>
+
+                <p class="meta">
+                  created: {{ e.created_at | date:'short' }} · updated: {{
+                  e.updated_at | date:'short' }}
+                </p>
+              </ion-label>
             </ion-item>
-          </ng-container>
-  
-          <ng-template #entriesTpl>
-            <div *ngIf="entries.length === 0" class="empty">
-              <ion-icon [name]="'documentTextOutline'"></ion-icon>
-              <p>No entries yet. Start your first session!</p>
-            </div>
-  
-            <ion-list lines="inset">
-              <ion-item class="entry" *ngFor="let e of entries; trackBy: trackById">
-                <div slot="start" class="dot" [style.background]="e.color"></div>
-                <ion-label>
-                  <h3>
-                    {{ e.project || 'No project' }}
-                    <span class="pill" [style.border-color]="e.color">
-                      {{ durationPretty(e) }}
-                    </span>
-                  </h3>
-  
-                  <p class="times">
-                    {{ e.start_at | date:'short' }}
-                    <ng-container *ngIf="e.end_at as end">
-                      → {{ end | date:'short' }}
-                    </ng-container>
-                  </p>
-  
-                  <div class="chips" *ngIf="e.tags?.length">
-                    <ion-chip *ngFor="let t of e.tags"><ion-label>{{ t }}</ion-label></ion-chip>
-                  </div>
-  
-                  <div class="note" *ngIf="e.note">
-                    <ion-icon [name]="'documentTextOutline'"></ion-icon>
-                    <span>{{ e.note }}</span>
-                  </div>
-  
-                  <p class="meta">
-                    created: {{ e.created_at | date:'short' }} · updated: {{ e.updated_at | date:'short' }}
-                  </p>
-                </ion-label>
-              </ion-item>
-            </ion-list>
-          </ng-template>
-        </ion-card-content>
-      </ion-card>
-    </div>
-  </ion-content>
-  
+          </ion-list>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

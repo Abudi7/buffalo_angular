@@ -1,4 +1,6 @@
-// actions/app.go
+// Package actions wires the Buffalo app: middleware, routes, and CORS.
+// It exposes App() which is used by main and tests to boot the server.
+// Keep cross‑cutting concerns (security, JSON, DB tx) centralized here.
 package actions
 
 import (
@@ -30,19 +32,24 @@ var (
 func App() *buffalo.App {
 	appOnce.Do(func() {
 
-		// ✅ Strong CORS configuration for Ionic dev server
+		// ✅ Strong CORS configuration for Ionic dev server and Capacitor
 		c := cors.New(cors.Options{
 			AllowedOrigins: []string{
 				"http://localhost:8100",
 				"http://127.0.0.1:8100",
-				// For mobile builds later:
+				"http://192.168.1.180:8100",
+				// Native apps
 				"capacitor://localhost",
 				"ionic://localhost",
-			  },
-			AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-			AllowedHeaders:   []string{"Authorization", "Content-Type"},
-			ExposedHeaders:   []string{"Content-Type"},
-			AllowCredentials: true, // ok even if you don't use cookies
+			},
+			AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+			AllowedHeaders: []string{
+				"Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With",
+				"Access-Control-Request-Method", "Access-Control-Request-Headers",
+			},
+			ExposedHeaders:      []string{"Content-Type"},
+			AllowCredentials:    true,
+			AllowPrivateNetwork: true,
 		})
 
 		app = buffalo.New(buffalo.Options{
@@ -79,7 +86,7 @@ func App() *buffalo.App {
 		api.Use(AuthRequired)
 		api.GET("/me", Me)
 		api.POST("/logout", Logout)
-		
+
 		// Time tracking (protected)
 		tracks := api.Group("/tracks")
 		tracks.GET("/", TracksIndex)

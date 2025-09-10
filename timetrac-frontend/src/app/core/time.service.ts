@@ -1,3 +1,5 @@
+// TimeService wraps HTTP calls to the time tracking API.
+// It provides typed helpers to list/start/stop/update/remove entries.
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';

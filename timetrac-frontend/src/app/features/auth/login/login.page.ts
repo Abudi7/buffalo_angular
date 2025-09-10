@@ -54,9 +54,13 @@ export class LoginPage {
       },
       error: async (err) => {
         this.loading = false;
+        // Log full error to help diagnose iOS networking/CORS issues
+        console.error('Login error:', err);
+        const backendMsg = err?.error?.error || err?.message || 'Login failed';
+        const status = err?.status ? ` (status ${err.status})` : '';
         const t = await this.toast.create({
-          message: err?.error?.error || 'Login failed',
-          duration: 2000,
+          message: `${backendMsg}${status}`,
+          duration: 2500,
           color: 'danger',
         });
         t.present();

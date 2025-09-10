@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Build frontend
+        working-directory: timetrac-frontend
+        run: |
+          npm ci
+          npm run build
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.x"
+      - name: Build backend
+        working-directory: backend
+        run: |
+          go mod tidy
+          go build -o timetrac-backend
+      - name: Create archive
+        run: |
+          tar -czf artifact.tar.gz backend/timetrac-backend timetrac-frontend/www
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifact.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

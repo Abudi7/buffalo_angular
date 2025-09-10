@@ -1,8 +1,11 @@
+// NGXS auth state models the authenticated user and JWT token.
+// All mutations are centralized here to keep side-effects observable and testable.
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { AuthService, User } from '../core/auth.service';
 import { Login, Register, LoadMe, Logout } from './auth.actions';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 export interface AuthStateModel {
   user: User | null;
@@ -51,14 +54,18 @@ export class AuthState {
     );
   }
 
-  // auth.state.ts (excerpt)
-    @Action(Logout)
-    logout(ctx: StateContext<AuthStateModel>) {
+  // Make logout idempotent: clear local state even if server call fails
+  @Action(Logout)
+  logout(ctx: StateContext<AuthStateModel>) {
     return this.auth.logout().pipe(
-        tap(() => {
+      catchError(err => {
+        console.warn('Logout API error (ignored):', err);
+        return of({});
+      }),
+      tap(() => {
         localStorage.removeItem('token');
         ctx.setState({ user: null, token: null, expires_at: null });
-        })
+      })
     );
-    }
+  }
 }

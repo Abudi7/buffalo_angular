@@ -39,16 +39,16 @@
     border-radius: 18px;
     box-shadow: 0 18px 48px rgba(0, 0, 0, 0.25);
     overflow: hidden;
-    backdrop-filter: blur(6px);
+    /* Avoid iOS WKWebView input issues with blur */
     --background: rgba(255, 255, 255, 0.96);
-  
-    ion-card-title {
-      font-size: 22px;
-      font-weight: 700;
-    }
-  
-    ion-card-subtitle {
-      opacity: 0.8;
+  }
+
+  /* iOS-specific: remove blur/glass to ensure inputs are interactive */
+  @supports (-webkit-touch-callout: none) {
+    .login-card {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      --background: #ffffff !important;
     }
   }
   

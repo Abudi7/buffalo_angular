@@ -1,3 +1,5 @@
+// Auth endpoints: register, login, me, logout.
+// Keep payloads minimal and validate/normalize at the edge.
 package actions
 
 import (
@@ -5,11 +7,12 @@ import (
 	"strings"
 	"time"
 
+	"backend/models"
+
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"backend/models"
 )
 
 // POST /api/auth/register
@@ -87,13 +90,13 @@ func Login(c buffalo.Context) error {
 	INSERT INTO auth_tokens (jti, user_id, expires_at, created_at, updated_at)
 	VALUES (?, ?, ?, now(), now())
 	`, jti, u.ID, exp).Exec(); err != nil {
-	return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "cannot persist token"}))
+		return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "cannot persist token"}))
 	}
-		return c.Render(http.StatusOK, r.JSON(map[string]any{
-			"user":       u,
-			"token":      token,
-			"expires_at": exp,
-		}))
+	return c.Render(http.StatusOK, r.JSON(map[string]any{
+		"user":       u,
+		"token":      token,
+		"expires_at": exp,
+	}))
 }
 
 // GET /api/me (AuthRequired)
@@ -108,25 +111,25 @@ func Me(c buffalo.Context) error {
 func Logout(c buffalo.Context) error {
 	authz := c.Request().Header.Get("Authorization")
 	if authz == "" || !strings.HasPrefix(authz, "Bearer ") {
-	  return c.Render(http.StatusUnauthorized, r.JSON(map[string]string{"error": "missing token"}))
+		return c.Render(http.StatusUnauthorized, r.JSON(map[string]string{"error": "missing token"}))
 	}
-  
+
 	claims, err := ParseJWT(strings.TrimPrefix(authz, "Bearer "))
 	if err != nil {
-	  return c.Render(http.StatusUnauthorized, r.JSON(map[string]string{"error": "invalid token"}))
+		return c.Render(http.StatusUnauthorized, r.JSON(map[string]string{"error": "invalid token"}))
 	}
-  
+
 	// لو exp غير موجود بالتوكن، عيّن واحد افتراضي
 	exp := time.Now().Add(jwtExpiry())
 	if claims.ExpiresAt != nil {
-	  exp = claims.ExpiresAt.Time
+		exp = claims.ExpiresAt.Time
 	}
-  
+
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok || tx == nil {
-	  return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "db transaction missing"}))
+		return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "db transaction missing"}))
 	}
-  
+
 	// استخدم claims.ID كـ jti و claims.UserID كـ user_id
 	if err := tx.RawQuery(`
 	  INSERT INTO auth_tokens (jti, user_id, revoked_at, expires_at, created_at, updated_at)
@@ -136,8 +139,8 @@ func Logout(c buffalo.Context) error {
 			expires_at = EXCLUDED.expires_at,
 			updated_at = now()
 	`, claims.ID, claims.UserID, exp).Exec(); err != nil {
-	  return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "logout failed"}))
+		return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "logout failed"}))
 	}
-  
+
 	return c.Render(http.StatusOK, r.JSON(map[string]string{"status": "logged out"}))
-  }
+}

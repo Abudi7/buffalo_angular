@@ -1,3 +1,5 @@
+// AuthService handles registration, login, me, and logout calls.
+// It is intentionally thin and stateless; state lives in NGXS.
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';

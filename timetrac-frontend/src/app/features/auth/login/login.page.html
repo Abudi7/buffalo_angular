@@ -1,100 +1,102 @@
-<!-- src/app/features/auth/login/login.page.html -->
-<!-- Local header for the login screen -->
 <ion-header class="login-header">
-    <ion-toolbar>
-      <ion-title>TimeTrac</ion-title>
-      <div slot="end" class="brand-badge">Welcome</div>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-content class="login-bg" [fullscreen]="true">
-    <div class="login-wrap">
-      <ion-card class="login-card">
-        <ion-card-header>
-          <ion-card-title>Sign in</ion-card-title>
-          <ion-card-subtitle>Access your dashboard</ion-card-subtitle>
-        </ion-card-header>
-  
-        <ion-card-content>
-          <!-- Expose the form as #f and pass it to submit(f) -->
-          <form #f="ngForm" (ngSubmit)="submit(f)" novalidate>
-            <!-- Email -->
-            <ion-item fill="outline" class="field">
-              <ion-icon [name]="'mailOutline'" slot="start"></ion-icon>
-              <ion-input
-                name="email"
-                type="email"
-                inputmode="email"
-                autocomplete="email"
-                autocapitalize="off"
-                autocorrect="off"
-                spellcheck="false"
-                [(ngModel)]="formData.email"
-                label="Email"
-                labelPlacement="floating"
-                required
-              ></ion-input>
-            </ion-item>
-  
-            <!-- Password with show/hide -->
-            <ion-item fill="outline" class="field">
-              <ion-icon [name]="'lockClosedOutline'" slot="start"></ion-icon>
-              <ion-input
-                name="password"
-                [type]="showPassword ? 'text' : 'password'"
-                autocomplete="current-password"
-                autocapitalize="off"
-                autocorrect="off"
-                spellcheck="false"
-                [(ngModel)]="formData.password"
-                label="Password"
-                labelPlacement="floating"
-                required
-                minlength="6"
-              ></ion-input>
-              <ion-button
-                fill="clear"
-                slot="end"
-                size="small"
-                type="button"
-                (click)="togglePassword()"
-                aria-label="Toggle password visibility"
-              >
-                <ion-icon [name]="showPassword ? 'eyeOffOutline' : 'eyeOutline'"></ion-icon>
-              </ion-button>
-            </ion-item>
-  
-            <div class="actions">
-              <ion-button
-                expand="block"
-                type="submit"
-                [disabled]="loading || !f.form.valid"
-                class="primary-btn"
-              >
-                <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
-                <span *ngIf="!loading">Login</span>
-              </ion-button>
-  
-              <ion-button
-                expand="block"
-                fill="clear"
-                routerLink="/register"
-                class="link-btn"
-              >
-                Create account
-              </ion-button>
-            </div>
-          </form>
-        </ion-card-content>
-      </ion-card>
-  
-      <!-- Optional footer note -->
-      <div class="foot-note">
-        By signing in you agree to our
-        <a href="#" (click)="$event.preventDefault()">Terms</a>
-        &amp;
-        <a href="#" (click)="$event.preventDefault()">Privacy</a>.
-      </div>
+  <ion-toolbar>
+    <ion-title>TimeTrac</ion-title>
+    <div slot="end" class="brand-badge">Welcome</div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="login-bg" [fullscreen]="true">
+  <div class="login-wrap">
+    <ion-card class="login-card">
+      <ion-card-header>
+        <ion-card-title>Sign in</ion-card-title>
+        <ion-card-subtitle>Access your dashboard</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form #f="ngForm" (ngSubmit)="submit(f)" novalidate>
+          <!-- Email (native input for iOS compatibility) -->
+          <ion-item fill="outline" class="field" (click)="emailNative?.focus()">
+            <ion-icon [name]="'mail-outline'" slot="start"></ion-icon>
+            <input
+              #emailNative
+              slot="end"
+              class="native-input"
+              name="email"
+              type="email"
+              inputmode="email"
+              enterkeyhint="next"
+              autocomplete="email"
+              autocapitalize="none"
+              autocorrect="off"
+              spellcheck="false"
+              [(ngModel)]="formData.email"
+              placeholder="Email"
+              required
+            />
+          </ion-item>
+
+          <!-- Password (native input) -->
+          <ion-item fill="outline" class="field">
+            <ion-icon [name]="'lock-closed-outline'" slot="start"></ion-icon>
+            <input
+              slot="end"
+              class="native-input"
+              name="password"
+              [type]="showPassword ? 'text' : 'password'"
+              enterkeyhint="go"
+              autocomplete="current-password"
+              autocapitalize="none"
+              autocorrect="off"
+              spellcheck="false"
+              [(ngModel)]="formData.password"
+              placeholder="Password"
+              required
+              minlength="6"
+            />
+            <ion-button
+              fill="clear"
+              slot="end"
+              size="small"
+              type="button"
+              (click)="togglePassword()"
+              aria-label="Toggle password visibility"
+            >
+              <ion-icon
+                [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              ></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <div class="actions">
+            <ion-button
+              expand="block"
+              type="submit"
+              [disabled]="loading || !f.form.valid"
+              class="primary-btn"
+            >
+              <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+              <span *ngIf="!loading">Login</span>
+            </ion-button>
+
+            <ion-button
+              expand="block"
+              fill="clear"
+              routerLink="/register"
+              class="link-btn"
+            >
+              Create account
+            </ion-button>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="foot-note">
+      By signing in you agree to our
+      <a href="#" (click)="$event.preventDefault()">Terms</a>
+      &amp;
+      <a href="#" (click)="$event.preventDefault()">Privacy</a>.
     </div>
-  </ion-content>
-  
+  </div>
+</ion-content>

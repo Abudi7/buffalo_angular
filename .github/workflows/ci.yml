@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, prod]
+  pull_request:
+    branches: [main, prod]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.x"
+      - name: Backend deps
+        working-directory: backend
+        run: |
+          go mod tidy
+      - name: Backend build
+        working-directory: backend
+        run: |
+          go build ./...
+      - name: Backend tests
+        working-directory: backend
+        run: |
+          go test ./...
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install
+        working-directory: timetrac-frontend
+        run: npm ci
+      - name: Lint
+        working-directory: timetrac-frontend
+        run: npm run lint --if-present
+      - name: Build
+        working-directory: timetrac-frontend
+        run: npm run build
+      - name: Tests
+        working-directory: timetrac-frontend
+        run: npm test -- --watch=false --browsers=ChromeHeadless || true

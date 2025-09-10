@@ -16,74 +16,17 @@
   }
 
   /* ====== Animation Classes ====== */
-  .animated-menu {
-    animation: slideInLeft 0.5s ease-out;
-  }
-
-  .animated-menu-header {
-    animation: fadeInDown 0.6s ease-out 0.1s both;
-  }
-
-  .animated-menu-list {
-    animation: fadeInUp 0.6s ease-out 0.2s both;
-  }
-
-  .animated-menu-item {
-    animation: slideInLeft 0.5s ease-out both;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      transform: translateX(8px);
-      background: var(--menu-hover);
-    }
-  }
-
-  .animated-divider {
-    animation: fadeIn 0.6s ease-out both;
-  }
+  .animated-menu { animation: slideInLeft 0.5s ease-out; }
+  .animated-menu-header { animation: fadeInDown 0.6s ease-out 0.1s both; }
+  .animated-menu-list { animation: fadeInUp 0.6s ease-out 0.2s both; }
+  .animated-menu-item { animation: slideInLeft 0.5s ease-out both; transition: all 0.3s ease; &:hover { transform: translateX(8px); background: var(--menu-hover); } }
+  .animated-divider { animation: fadeIn 0.6s ease-out both; }
 
   /* ====== Keyframe Animations ====== */
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+  @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   
   /* ====== Header (glassmorphism) ====== */
   .app-header .glass {

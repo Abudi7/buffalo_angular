@@ -10,28 +10,41 @@
       <div class="floating-shapes">
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="shape shape-4"></div>
       </div>
     </div>
-    
+
     <div class="hero-content">
       <div class="left">
         <div class="title animated-title">{{ t('app_title') }}</div>
-        <div class="subtitle animated-subtitle">{{ today | date:'EEEE, MMM d' }}</div>
+        <div class="subtitle animated-subtitle">
+          {{ today | date:'EEEE, MMM d' }}
+        </div>
         <div class="welcome-text animated-text">{{ t('welcome_message') }}</div>
       </div>
       <div class="right">
-        <ion-segment value="en" (ionChange)="onLangChange($event)" class="animated-segment">
+        <ion-segment
+          value="en"
+          (ionChange)="onLangChange($event)"
+          class="animated-segment"
+        >
           <ion-segment-button value="en">EN</ion-segment-button>
           <ion-segment-button value="ar">AR</ion-segment-button>
           <ion-segment-button value="de">DE</ion-segment-button>
         </ion-segment>
-        <ion-button fill="clear" class="refresh animated-button" (click)="load()">
+        <ion-button
+          fill="clear"
+          class="refresh animated-button"
+          (click)="load()"
+        >
           <ion-icon [name]="'refresh-outline'"></ion-icon>
           {{ t('refresh') }}
         </ion-button>
-        <ion-button fill="outline" size="small" class="animated-button" (click)="exportCsv()">
+        <ion-button
+          fill="outline"
+          size="small"
+          class="animated-button"
+          (click)="exportCsv()"
+        >
           {{ t('export_csv') }}
         </ion-button>
       </div>
@@ -41,12 +54,19 @@
   <!-- Image Slider Section -->
   <div class="slider-section">
     <div class="animated-slider">
-      <div class="slider-container" [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
-        <div 
-          *ngFor="let slide of slides; let i = index" 
-          class="slide-content" 
-          [class.active]="i === currentSlide">
-          <div class="slide-image" [style.background-image]="'url(' + slide.image + ')'">
+      <div
+        class="slider-container"
+        [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'"
+      >
+        <div
+          *ngFor="let slide of slides; let i = index"
+          class="slide-content"
+          [class.active]="i === currentSlide"
+        >
+          <div
+            class="slide-image"
+            [style.background-image]="'url(' + slide.image + ')'"
+          >
             <div class="slide-overlay">
               <h2 class="slide-title">{{ slide.title }}</h2>
               <p class="slide-description">{{ slide.description }}</p>
@@ -55,15 +75,16 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Slider Navigation -->
     <div class="slider-nav">
       <div class="nav-dots">
-        <span 
-          *ngFor="let slide of slides; let i = index" 
-          class="dot" 
+        <span
+          *ngFor="let slide of slides; let i = index"
+          class="dot"
           [class.active]="i === currentSlide"
-          (click)="goToSlide(i)">
+          (click)="goToSlide(i)"
+        >
         </span>
       </div>
     </div>
@@ -171,13 +192,20 @@
     <!-- Animated Entries list -->
     <ion-card class="card list-card animated-card" [class.card-hover]="true">
       <ion-card-header>
-        <ion-card-title class="animated-title">{{ t('entries') }}</ion-card-title>
-        <ion-card-subtitle class="animated-subtitle">{{ t('newest_first') }}</ion-card-subtitle>
+        <ion-card-title class="animated-title"
+          >{{ t('entries') }}</ion-card-title
+        >
+        <ion-card-subtitle class="animated-subtitle"
+          >{{ t('newest_first') }}</ion-card-subtitle
+        >
       </ion-card-header>
 
       <ion-card-content>
         <ng-container *ngIf="loading; else entriesTpl">
-          <ion-item class="skeleton animated-skeleton" *ngFor="let i of [1,2,3]">
+          <ion-item
+            class="skeleton animated-skeleton"
+            *ngFor="let i of [1,2,3]"
+          >
             <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
           </ion-item>
         </ng-container>

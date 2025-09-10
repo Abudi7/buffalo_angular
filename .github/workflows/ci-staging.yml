@@ -7,7 +7,7 @@ on:
     branches: [ staging ]
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
   GO_VERSION: '1.21'
 
 jobs:

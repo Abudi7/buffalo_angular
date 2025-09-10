@@ -1,10 +1,35 @@
-// HomePage renders the timer controls and the latest time entries list.
-// It encapsulates minimal state and delegates persistence to TimeService.
-// The component favors clarity over micro-optimizations for maintainability.
+/**
+ * HomePage Component - Main Time Tracking Interface
+ * 
+ * This component serves as the primary interface for time tracking functionality.
+ * It provides a comprehensive timer control system with project management,
+ * location tracking, photo attachments, and time entry management.
+ * 
+ * Key Features:
+ * - Start/stop time tracking with project categorization
+ * - Location tracking with GPS coordinates and address
+ * - Photo capture and attachment capabilities
+ * - Tag-based organization system
+ * - Real-time entry list with pull-to-refresh
+ * - CSV export functionality
+ * - Multi-language support (AR, EN, DE)
+ * - Modern responsive UI with animations
+ * 
+ * Architecture:
+ * - Uses Angular standalone components for modularity
+ * - Implements dependency injection with inject() function
+ * - Delegates data persistence to TimeService
+ * - Integrates with Capacitor plugins for native features
+ * - Follows reactive programming patterns
+ * 
+ * @author Abud Developer
+ * @version 1.0.0
+ * @since 2025-09-10
+ */
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-// Ionic standalone components
+// Ionic standalone components for UI elements
 import {
   IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
   IonItem, IonLabel, IonSelect, IonSelectOption, IonButton, IonIcon, IonTextarea,
@@ -16,10 +41,19 @@ import { FormsModule } from '@angular/forms';
 import { TimeService, TimeEntry } from '../../core/time.service';
 import { I18nService } from '../../core/i18n.service';
 
-// Capacitor plugins
+// Capacitor plugins for native device features
 import { Geolocation } from '@capacitor/geolocation';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
+/**
+ * Component decorator configuration
+ * 
+ * Defines the component metadata including:
+ * - Selector for template usage
+ * - Standalone component flag for modularity
+ * - Required imports for template functionality
+ * - Template and style file references
+ */
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -33,53 +67,180 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  // Header date (avoid new Date() in template)
+  // ===== COMPONENT STATE =====
+  
+  /**
+   * Current date for header display
+   * Cached to avoid repeated Date() calls in template
+   */
   today = new Date();
 
-  // Form controls
+  // ===== FORM CONTROLS =====
+  
+  /**
+   * Available project categories for time tracking
+   * Users can select from predefined options or use custom projects
+   */
   projects = ['No project', 'Web', 'Mobile', 'Backend', 'Design'];
+  
+  /**
+   * Currently selected project for time tracking
+   * Defaults to 'No project' for general time tracking
+   */
   selectedProject = 'No project';
+  
+  /**
+   * Array of tags associated with the current time entry
+   * Used for categorization and filtering
+   */
   tags: string[] = [];
+  
+  /**
+   * Input field value for adding new tags
+   * Bound to the tag input field in the template
+   */
   tagInput = '';
+  
+  /**
+   * Free-form text note for the current time entry
+   * Allows users to add detailed descriptions
+   */
   note = '';
+  
+  /**
+   * Hex color code for the current time entry
+   * Used for visual theming and organization
+   */
   color = '#3b82f6';
 
-  // Optional extras
+  // ===== OPTIONAL FEATURES =====
+  
+  /**
+   * GPS latitude coordinate for location tracking
+   * Captured when starting time tracking
+   */
   location_lat?: number;
+  
+  /**
+   * GPS longitude coordinate for location tracking
+   * Captured when starting time tracking
+   */
   location_lng?: number;
+  
+  /**
+   * Human-readable address for location tracking
+   * Can be reverse geocoded from GPS coordinates
+   */
   location_addr?: string;
+  
+  /**
+   * Base64 encoded photo data for time entry
+   * Captured using device camera or file selection
+   */
   photo_data?: string;
 
 
-  // Data
+  // ===== DATA MANAGEMENT =====
+  
+  /**
+   * Array of time tracking entries for display
+   * Loaded from the backend via TimeService
+   */
   entries: TimeEntry[] = [];
+  
+  /**
+   * Loading state indicator for UI feedback
+   * Used to show loading spinners during API calls
+   */
   loading = false;
 
-  // Running timer (for top clock only)
+  // ===== TIMER STATE =====
+  
+  /**
+   * Currently running time entry (if any)
+   * Used to track active time tracking sessions
+   */
   runningEntry: TimeEntry | null = null;
+  
+  /**
+   * Elapsed time in milliseconds for the running entry
+   * Updated every second for real-time display
+   */
   elapsedMs = 0;
 
-  // Ticks
+  // ===== INTERVAL MANAGEMENT =====
+  
+  /**
+   * Clock tick interval for updating elapsed time
+   * Cleared when component is destroyed
+   */
   private _clockTick?: any;
+  
+  /**
+   * Date tick interval for updating header date
+   * Cleared when component is destroyed
+   */
   private _dateTick?: any;
 
+  // ===== DEPENDENCY INJECTION =====
+  
+  /**
+   * TimeService instance for time tracking operations
+   * Handles API communication and data persistence
+   */
   private api = inject(TimeService);
+  
+  /**
+   * I18nService instance for internationalization
+   * Provides multi-language support (AR, EN, DE)
+   */
   private i18n = inject(I18nService);
 
+  /**
+   * Component constructor
+   * 
+   * Initializes the component instance. No complex initialization
+   * is performed here as it's handled in ngOnInit().
+   */
   constructor() {}
 
-  // ==== Lifecycle ====
+  // ===== LIFECYCLE HOOKS =====
+  
+  /**
+   * Angular lifecycle hook - Component initialization
+   * 
+   * Called once after the component is initialized. Performs:
+   * - Loads existing time entries from the backend
+   * - Starts the date tick for header updates every minute
+   */
   ngOnInit(): void {
     this.load();
     this._dateTick = setInterval(() => (this.today = new Date()), 60_000);
   }
 
+  /**
+   * Angular lifecycle hook - Component cleanup
+   * 
+   * Called when the component is about to be destroyed. Performs:
+   * - Stops the clock tick to prevent memory leaks
+   * - Stops the date tick to prevent memory leaks
+   */
   ngOnDestroy(): void {
     clearInterval(this._clockTick);
     clearInterval(this._dateTick);
   }
 
-  // ==== API ====
+  // ===== API METHODS =====
+  
+  /**
+   * Loads time entries from the backend
+   * 
+   * This method fetches all time tracking entries for the current user
+   * and updates the component state. It can be called with or without
+   * a pull-to-refresh event.
+   * 
+   * @param event - Optional CustomEvent from ion-refresher for pull-to-refresh
+   */
   load(event?: CustomEvent): void {
     if (!event) this.loading = true;
     this.api.list().subscribe({
@@ -96,6 +257,22 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Gets the current GPS location for time tracking
+   * 
+   * This method requests location permissions and captures the current
+   * GPS coordinates. It uses high accuracy positioning for precise
+   * location tracking.
+   * 
+   * Features:
+   * - Requests location permissions before accessing GPS
+   * - Uses high accuracy positioning
+   * - Gracefully handles permission denials
+   * - Stores latitude and longitude coordinates
+   * 
+   * Note: Address is not reverse geocoded here but could be
+   * implemented server-side for better performance.
+   */
   async getLocation(): Promise<void> {
     try {
       const perm = await Geolocation.requestPermissions();
@@ -107,6 +284,27 @@ export class HomePage implements OnInit, OnDestroy {
     } catch {}
   }
 
+  /**
+   * Captures or selects a photo for the time entry
+   * 
+   * This method handles photo capture with intelligent fallback mechanisms:
+   * - Detects simulator environments and uses file input
+   * - Handles camera permission requests
+   * - Provides timeout protection for camera operations
+   * - Falls back to file selection on any errors
+   * 
+   * Environment Detection:
+   * - Automatically detects iOS Simulator
+   * - Detects web browser environments
+   * - Uses appropriate capture method for each environment
+   * 
+   * Error Handling:
+   * - Graceful fallback to file input on camera errors
+   * - Permission denial handling
+   * - Timeout protection (10 seconds)
+   * 
+   * @returns Promise that resolves when photo is captured or selection is made
+   */
   async addPhoto(): Promise<void> {
     try {
       console.log('Opening camera...');

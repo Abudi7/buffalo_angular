@@ -2,49 +2,49 @@ name: CI/CD - Staging Branch
 
 on:
   push:
-    branches: [ staging ]
+    branches: [staging]
   pull_request:
-    branches: [ staging ]
+    branches: [staging]
 
 env:
-  NODE_VERSION: '20'
-  GO_VERSION: '1.21'
+  NODE_VERSION: "20"
+  GO_VERSION: "1.21"
 
 jobs:
   # Frontend Build and Deploy
   frontend-staging:
     name: Frontend Staging Build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: timetrac-frontend/package-lock.json
-          
+
       - name: Install dependencies
         working-directory: ./timetrac-frontend
         run: npm ci
-        
+
       - name: Run tests
         working-directory: ./timetrac-frontend
         run: npm run test -- --watch=false --browsers=ChromeHeadless
-        
+
       - name: Build for staging
         working-directory: ./timetrac-frontend
         run: npm run build -- --configuration=staging
-        
+
       - name: Deploy to staging
         run: |
           echo "Deploying to staging environment..."
           # Add your staging deployment commands here
           # Example: rsync, docker, or cloud deployment
-          
+
       - name: Upload staging artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -56,30 +56,30 @@ jobs:
   backend-staging:
     name: Backend Staging Build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
-          
+
       - name: Build backend
         working-directory: ./backend
         run: go build -o timetrac-backend ./cmd/app
-        
+
       - name: Run backend tests
         working-directory: ./backend
         run: go test ./... -v
-        
+
       - name: Deploy backend to staging
         run: |
           echo "Deploying backend to staging..."
           # Add your backend staging deployment commands here
-          
+
       - name: Upload backend artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -92,22 +92,22 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [frontend-staging, backend-staging]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: timetrac-frontend/package-lock.json
-          
+
       - name: Install dependencies
         working-directory: ./timetrac-frontend
         run: npm ci
-        
+
       - name: Run E2E tests
         working-directory: ./timetrac-frontend
         run: npm run e2e --if-present
@@ -119,21 +119,50 @@ jobs:
     name: Performance Tests
     runs-on: ubuntu-latest
     needs: [frontend-staging, backend-staging]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
+          cache: "npm"
+          cache-dependency-path: timetrac-frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./timetrac-frontend
+        run: npm ci
+
+      - name: Build for staging
+        working-directory: ./timetrac-frontend
+        run: npm run build -- --configuration=staging
+
+      - name: Verify build output
+        working-directory: ./timetrac-frontend
+        run: |
+          echo "Build directory contents:"
+          ls -la www/
+          echo "Index.html exists:"
+          test -f www/index.html && echo "✅ index.html found" || echo "❌ index.html missing"
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.12.x
-        
+
+      - name: Verify Lighthouse config
+        working-directory: ./timetrac-frontend
+        run: |
+          echo "Lighthouse config file:"
+          ls -la lighthouserc.json
+          echo "Config file contents:"
+          cat lighthouserc.json
+
       - name: Run Lighthouse CI
+        working-directory: ./timetrac-frontend
         run: lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_SERVER_URL: ${{ secrets.LHCI_SERVER_URL }}
+          LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
           STAGING_URL: ${{ secrets.STAGING_URL }}

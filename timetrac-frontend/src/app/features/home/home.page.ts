@@ -111,13 +111,19 @@ export class HomePage implements OnInit, OnDestroy {
     try {
       console.log('Opening camera...');
       
-      // Check if we're in a simulator or web environment
+      // Check if we're in a simulator, web environment, or have camera issues
       const isSimulator = window.navigator.userAgent.includes('Simulator') || 
                          window.navigator.userAgent.includes('iPhone Simulator') ||
-                         window.navigator.userAgent.includes('iPad Simulator');
+                         window.navigator.userAgent.includes('iPad Simulator') ||
+                         window.navigator.userAgent.includes('iOS Simulator');
       
-      if (isSimulator) {
-        console.log('Running in simulator, using file input fallback');
+      const isWeb = !window.navigator.userAgent.includes('Mobile') && 
+                   !window.navigator.userAgent.includes('iPhone') && 
+                   !window.navigator.userAgent.includes('iPad');
+      
+      // For simulator or web, use file input directly
+      if (isSimulator || isWeb) {
+        console.log('Running in simulator/web environment, using file input fallback');
         this.openFileInput();
         return;
       }
@@ -139,14 +145,20 @@ export class HomePage implements OnInit, OnDestroy {
         }
       }
       
-      const img = await Camera.getPhoto({
-        resultType: CameraResultType.DataUrl,
-        source: CameraSource.Prompt,
-        quality: 60,
-        allowEditing: false,
-        width: 800,
-        height: 600,
-      });
+      // Try to get photo with timeout
+      const img = await Promise.race([
+        Camera.getPhoto({
+          resultType: CameraResultType.DataUrl,
+          source: CameraSource.Prompt,
+          quality: 60,
+          allowEditing: false,
+          width: 800,
+          height: 600,
+        }),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Camera timeout')), 10000)
+        )
+      ]) as any;
       
       console.log('Photo captured successfully');
       this.photo_data = img.dataUrl || undefined;
@@ -156,7 +168,7 @@ export class HomePage implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Camera error:', error);
-      // Fallback to file input
+      // Always fallback to file input on any error
       this.openFileInput();
     }
   }
@@ -169,20 +181,54 @@ export class HomePage implements OnInit, OnDestroy {
     input.type = 'file';
     input.accept = 'image/*';
     input.capture = 'environment'; // Prefer back camera on mobile
+    input.style.display = 'none';
     
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          console.error('Selected file is not an image');
+          return;
+        }
+        
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          console.error('Image file is too large (max 10MB)');
+          return;
+        }
+        
         const reader = new FileReader();
         reader.onload = (e: any) => {
           this.photo_data = e.target.result;
-          console.log('Photo loaded from file input');
+          console.log('Photo loaded from file input successfully');
+        };
+        reader.onerror = (error) => {
+          console.error('Error reading file:', error);
         };
         reader.readAsDataURL(file);
       }
+      
+      // Clean up
+      document.body.removeChild(input);
     };
     
+    input.oncancel = () => {
+      console.log('File selection cancelled');
+      document.body.removeChild(input);
+    };
+    
+    // Add to DOM temporarily
+    document.body.appendChild(input);
     input.click();
+  }
+
+  /**
+   * Clear the current photo data
+   */
+  clearPhoto(): void {
+    this.photo_data = undefined;
+    console.log('Photo cleared');
   }
 
   start(): void {
@@ -285,10 +331,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
   removeTag(t: string): void { this.tags = this.tags.filter(x => x !== t); }
 
-  // Photo management
-  clearPhoto(): void {
-    this.photo_data = undefined;
-  }
+  // Photo management - clearPhoto method is defined above
 
   // CSV Export
   exportCsv(): void {

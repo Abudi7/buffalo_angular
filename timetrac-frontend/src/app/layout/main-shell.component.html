@@ -1,20 +1,8 @@
 <!-- Modern floating navigation -->
-<div class="modern-shell">
+<div class="main-shell">
   <!-- Floating navigation menu -->
-  <div
-    class="floating-nav"
-    (mouseenter)="showNav = true"
-    (mouseleave)="showNav = false"
-  >
-    <div class="nav-trigger">
-      <div class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-
-    <div class="nav-menu" [class.show]="showNav">
+  <div class="floating-nav">
+    <div class="nav-menu">
       <div class="nav-header">
         <div class="logo">
           <div class="logo-icon">⏱️</div>
@@ -25,12 +13,12 @@
       <div class="nav-items">
         <a routerLink="/home" routerLinkActive="active" class="nav-item">
           <ion-icon name="home-outline"></ion-icon>
-          <span>Home</span>
+          <span class="nav-text">Home</span>
         </a>
 
         <a routerLink="/settings" routerLinkActive="active" class="nav-item">
           <ion-icon name="settings-outline"></ion-icon>
-          <span>Settings</span>
+          <span class="nav-text">Settings</span>
         </a>
 
         <div class="nav-divider"></div>
@@ -47,13 +35,14 @@
 
         <button class="nav-item logout-btn" (click)="onLogout()">
           <ion-icon name="log-out-outline"></ion-icon>
-          <span>Logout</span>
+          <span class="nav-text">Logout</span>
         </button>
       </div>
 
       <div class="nav-footer">
         <button class="lang-btn" (click)="cycleLang()">
           <ion-icon name="globe-outline"></ion-icon>
+          <span class="nav-text">Language</span>
         </button>
       </div>
     </div>

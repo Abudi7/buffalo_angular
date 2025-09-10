@@ -14,6 +14,7 @@ import {
 
 import { FormsModule } from '@angular/forms';
 import { TimeService, TimeEntry } from '../../core/time.service';
+import { I18nService } from '../../core/i18n.service';
 
 @Component({
   selector: 'app-home',
@@ -52,7 +53,7 @@ export class HomePage implements OnInit, OnDestroy {
   private _clockTick?: any;
   private _dateTick?: any;
 
-  constructor(private api: TimeService) {}
+  constructor(private api: TimeService, private i18n: I18nService) {}
 
   // ==== Lifecycle ====
   ngOnInit(): void {
@@ -139,6 +140,11 @@ export class HomePage implements OnInit, OnDestroy {
     const ss = Math.floor(s % 60).toString().padStart(2, '0');
     return `${hh}:${mm}:${ss}`;
   }
+
+  // Translations helper
+  t(key: string): string { return this.i18n.t(key); }
+
+  changeLang(l: 'en'|'ar'|'de') { this.i18n.setLang(l); }
 
   // Card durations: only when finished
   isRunning(e: TimeEntry): boolean { return !e.end_at; }

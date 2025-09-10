@@ -7,16 +7,21 @@
   <!-- Hero -->
   <div class="hero">
     <div class="left">
-      <div class="title">TimeTrac</div>
+      <div class="title">{{ t('app_title') }}</div>
       <div class="subtitle">{{ today | date:'EEEE, MMM d' }}</div>
     </div>
     <div class="right">
+      <ion-segment value="en" (ionChange)="changeLang($event.detail.value)">
+        <ion-segment-button value="en">EN</ion-segment-button>
+        <ion-segment-button value="ar">AR</ion-segment-button>
+        <ion-segment-button value="de">DE</ion-segment-button>
+      </ion-segment>
       <ion-button fill="clear" class="refresh" (click)="load()">
         <ion-icon [name]="'refresh-outline'"></ion-icon>
-        Refresh
+        {{ t('refresh') }}
       </ion-button>
       <ion-button fill="outline" size="small" (click)="exportCsv()">
-        Export CSV
+        {{ t('export_csv') }}
       </ion-button>
     </div>
   </div>
@@ -32,10 +37,8 @@
     <!-- Control card -->
     <ion-card class="card control-card">
       <ion-card-header>
-        <ion-card-title>Track Time</ion-card-title>
-        <ion-card-subtitle
-          >Select project, tags, note & color</ion-card-subtitle
-        >
+        <ion-card-title>{{ t('track_time') }}</ion-card-title>
+        <ion-card-subtitle>{{ t('select_project_tags_note_color') }}</ion-card-subtitle>
       </ion-card-header>
 
       <ion-card-content>
@@ -59,7 +62,7 @@
 
         <!-- Tags -->
         <div class="tags-box">
-          <div class="label">Tags</div>
+          <div class="label">{{ t('tags') }}</div>
           <div class="tags">
             <ion-chip *ngFor="let t of tags">
               <ion-label>{{ t }}</ion-label>
@@ -77,7 +80,7 @@
 
         <!-- Note -->
         <div class="note-box">
-          <div class="label">Note</div>
+          <div class="label">{{ t('note') }}</div>
           <ion-textarea
             autoGrow="true"
             [placeholder]="'What are you working on?'"
@@ -94,7 +97,7 @@
             [disabled]="!!runningEntry"
           >
             <ion-icon slot="start" [name]="'play-circle-outline'"></ion-icon>
-            Start
+            {{ t('start') }}
           </ion-button>
           <ion-button
             size="large"
@@ -103,7 +106,7 @@
             [disabled]="!runningEntry"
           >
             <ion-icon slot="start" [name]="'stop-circle-outline'"></ion-icon>
-            Stop
+            {{ t('stop') }}
           </ion-button>
         </div>
       </ion-card-content>
@@ -112,8 +115,8 @@
     <!-- Entries list -->
     <ion-card class="card list-card">
       <ion-card-header>
-        <ion-card-title>Entries</ion-card-title>
-        <ion-card-subtitle>Newest first</ion-card-subtitle>
+        <ion-card-title>{{ t('entries') }}</ion-card-title>
+        <ion-card-subtitle>{{ t('newest_first') }}</ion-card-subtitle>
       </ion-card-header>
 
       <ion-card-content>
@@ -126,7 +129,7 @@
         <ng-template #entriesTpl>
           <div *ngIf="entries.length === 0" class="empty">
             <ion-icon [name]="'document-text-outline'"></ion-icon>
-            <p>No entries yet. Start your first session!</p>
+            <p>{{ t('no_entries') }}</p>
           </div>
 
           <ion-list lines="inset">

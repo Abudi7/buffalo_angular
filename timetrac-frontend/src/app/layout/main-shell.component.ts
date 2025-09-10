@@ -40,6 +40,7 @@ export class MainShellComponent {
 
   userEmail$ = this.store.select(AuthState.user).pipe(map(u => u?.email ?? ''));
   showNav = false;
+  private hoverTimeout: any;
 
   constructor() {}
 
@@ -68,5 +69,41 @@ export class MainShellComponent {
     const current = this.i18n.lang;
     const next = order[(order.indexOf(current) + 1) % order.length];
     this.i18n.setLang(next);
+  }
+
+  /**
+   * Toggle navigation visibility
+   * Used by hamburger menu button click
+   */
+  toggleNav() {
+    this.showNav = !this.showNav;
+  }
+
+  /**
+   * Show navigation on mouse enter
+   * Used by mouse hover over left side
+   */
+  onMouseEnter() {
+    clearTimeout(this.hoverTimeout);
+    this.showNav = true;
+  }
+
+  /**
+   * Hide navigation on mouse leave with delay
+   * Used by mouse leaving the navigation area
+   */
+  onMouseLeave() {
+    this.hoverTimeout = setTimeout(() => {
+      this.showNav = false;
+    }, 300); // 300ms delay to prevent flickering
+  }
+
+  /**
+   * Hide navigation immediately
+   * Used by close button and navigation links
+   */
+  hideNav() {
+    clearTimeout(this.hoverTimeout);
+    this.showNav = false;
   }
 }

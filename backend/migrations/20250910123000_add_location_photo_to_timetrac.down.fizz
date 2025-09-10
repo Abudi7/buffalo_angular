@@ -1,0 +1,6 @@
+drop_column("timetrac", "location_lat")
+drop_column("timetrac", "location_lng")
+drop_column("timetrac", "location_addr")
+drop_column("timetrac", "photo_data")
+
+

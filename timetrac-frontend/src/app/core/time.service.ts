@@ -12,6 +12,10 @@ export interface TimeEntry {
   tags: string[];
   note: string;
   color: string;
+  location_lat?: number | null;
+  location_lng?: number | null;
+  location_addr?: string | null;
+  photo_data?: string | null;
   start_at: string;            // ISO string from backend
   end_at?: string | null;      // null/undefined while running
   created_at: string;
@@ -34,6 +38,10 @@ export class TimeService {
     tags?: string[];
     note?: string;
     color?: string;
+    location_lat?: number;
+    location_lng?: number;
+    location_addr?: string;
+    photo_data?: string; // base64 or URL
   }): Observable<TimeEntry> {
     return this.http.post<TimeEntry>(`${this.base}/start`, data);
   }

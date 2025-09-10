@@ -16,6 +16,10 @@ import { FormsModule } from '@angular/forms';
 import { TimeService, TimeEntry } from '../../core/time.service';
 import { I18nService } from '../../core/i18n.service';
 
+// Capacitor plugins
+import { Geolocation } from '@capacitor/geolocation';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -40,6 +44,12 @@ export class HomePage implements OnInit, OnDestroy {
   tagInput = '';
   note = '';
   color = '#3b82f6';
+
+  // Optional extras
+  location_lat?: number;
+  location_lng?: number;
+  location_addr?: string;
+  photo_data?: string;
 
   // Data
   entries: TimeEntry[] = [];
@@ -86,6 +96,29 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
+  async getLocation(): Promise<void> {
+    try {
+      const perm = await Geolocation.requestPermissions();
+      if (perm.location === 'denied') return;
+      const pos = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      this.location_lat = pos.coords.latitude;
+      this.location_lng = pos.coords.longitude;
+      // Keep address empty here; could be reverse geocoded server-side later
+    } catch {}
+  }
+
+  async addPhoto(): Promise<void> {
+    try {
+      const img = await Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Prompt,
+        quality: 60,
+        allowEditing: false,
+      });
+      this.photo_data = img.dataUrl || undefined;
+    } catch {}
+  }
+
   start(): void {
     if (this.runningEntry) return;
     const payload = {
@@ -93,6 +126,10 @@ export class HomePage implements OnInit, OnDestroy {
       tags: this.tags,
       note: this.note,
       color: this.color,
+      location_lat: this.location_lat,
+      location_lng: this.location_lng,
+      location_addr: this.location_addr,
+      photo_data: this.photo_data,
     };
     this.api.start(payload).subscribe({
       next: e => {
@@ -184,9 +221,9 @@ export class HomePage implements OnInit, OnDestroy {
 
   // CSV Export
   exportCsv(): void {
-    const header = ['id','project','tags','note','color','start_at','end_at','created_at','updated_at'];
+    const header = ['email','project','tags','note','color','start_at','end_at','created_at','updated_at'];
     const rows = this.entries.map(e => [
-      e.id,
+      this.userEmail(),
       e.project || '',
       (e.tags || []).join('|'),
       (e.note || '').replace(/\n/g, ' '),
@@ -207,6 +244,18 @@ export class HomePage implements OnInit, OnDestroy {
     a.download = `timetrac-entries-${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  private userEmail(): string {
+    // fallback until we fetch user profile in this component
+    try {
+      const raw = localStorage.getItem('auth');
+      if (!raw) return '';
+      const parsed = JSON.parse(raw);
+      return parsed?.auth?.user?.email || parsed?.user?.email || '';
+    } catch {
+      return '';
+    }
   }
 
   trackById(_: number, e: TimeEntry) { return e.id; }

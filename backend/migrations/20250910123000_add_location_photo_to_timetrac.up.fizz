@@ -1,0 +1,6 @@
+add_column("timetrac", "location_lat", "float", {"null": true})
+add_column("timetrac", "location_lng", "float", {"null": true})
+add_column("timetrac", "location_addr", "text", {"null": true})
+add_column("timetrac", "photo_data", "text", {"null": true})
+
+

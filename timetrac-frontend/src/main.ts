@@ -17,7 +17,7 @@ import {
   // login
   mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline,
   // shell
-  homeOutline, logOutOutline,
+  homeOutline, logOutOutline, globeOutline,
   // home page
   timeOutline, refreshOutline, playCircleOutline, stopCircleOutline,
   colorPaletteOutline, documentTextOutline,
@@ -32,6 +32,7 @@ addIcons({
 
   'home-outline': homeOutline,
   'log-out-outline': logOutOutline,
+  'globe-outline': globeOutline,
 
   'time-outline': timeOutline,
   'refresh-outline': refreshOutline,

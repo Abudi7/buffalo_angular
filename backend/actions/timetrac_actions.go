@@ -46,10 +46,14 @@ func TracksIndex(c buffalo.Context) error {
 // POST /api/tracks/start
 func TracksStart(c buffalo.Context) error {
 	type payload struct {
-		Project string   `json:"project"`
-		Tags    []string `json:"tags"`
-		Note    string   `json:"note"`
-		Color   string   `json:"color"`
+		Project      string   `json:"project"`
+		Tags         []string `json:"tags"`
+		Note         string   `json:"note"`
+		Color        string   `json:"color"`
+		LocationLat  *float64 `json:"location_lat"`
+		LocationLng  *float64 `json:"location_lng"`
+		LocationAddr *string  `json:"location_addr"`
+		PhotoData    *string  `json:"photo_data"`
 	}
 	var p payload
 	if err := c.Bind(&p); err != nil {
@@ -79,6 +83,19 @@ func TracksStart(c buffalo.Context) error {
 		StartAt: time.Now(),
 		EndAt:   nulls.Time{}, // running (NULL)
 	}
+	if p.LocationLat != nil {
+		item.LocationLat = nulls.NewFloat64(*p.LocationLat)
+	}
+	if p.LocationLng != nil {
+		item.LocationLng = nulls.NewFloat64(*p.LocationLng)
+	}
+	if p.LocationAddr != nil {
+		item.LocationAddr = nulls.NewString(strings.TrimSpace(*p.LocationAddr))
+	}
+	if p.PhotoData != nil {
+		item.PhotoData = nulls.NewString(*p.PhotoData)
+	}
+
 	if err := tx.Create(&item); err != nil {
 		return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "cannot create"}))
 	}

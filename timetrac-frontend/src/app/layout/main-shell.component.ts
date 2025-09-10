@@ -30,6 +30,7 @@ import { Store } from '@ngxs/store';
 import { AuthState } from '../state/auth.state';
 import { map } from 'rxjs/operators';
 import { Logout } from '../state/auth.actions';
+import { I18nService } from '../core/i18n.service';
 
 @Component({
   selector: 'app-main-shell',
@@ -49,6 +50,7 @@ export class MainShellComponent {
   private router = inject(Router);
   private menuCtrl = inject(MenuController);
   private toast = inject(ToastController);
+  private i18n = inject(I18nService);
 
   userEmail$ = this.store.select(AuthState.user).pipe(map(u => u?.email ?? ''));
 
@@ -72,5 +74,12 @@ export class MainShellComponent {
         this.router.navigateByUrl('/login');
       },
     });
+  }
+
+  cycleLang() {
+    const order: ('en'|'ar'|'de')[] = ['en','ar','de'];
+    const current = this.i18n.lang;
+    const next = order[(order.indexOf(current) + 1) % order.length];
+    this.i18n.setLang(next);
   }
 }

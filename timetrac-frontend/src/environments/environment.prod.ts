@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  API_BASE: 'http://127.0.0.1:8087',
+  // TODO: Update this URL to your production server
+  API_BASE: 'https://your-production-server.com',
 };

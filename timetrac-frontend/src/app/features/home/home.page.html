@@ -89,19 +89,45 @@
           <ion-button size="small" (click)="getLocation()"
             >Use Location</ion-button
           >
-          <ion-button size="small" (click)="addPhoto()" [color]="photo_data ? 'success' : 'primary'">
+          <ion-button
+            size="small"
+            (click)="addPhoto()"
+            [color]="photo_data ? 'success' : 'primary'"
+          >
             <ion-icon name="camera" slot="start"></ion-icon>
             {{ photo_data ? 'Photo Added' : 'Add Photo' }}
           </ion-button>
         </div>
 
         <!-- Photo Preview -->
-        <div *ngIf="photo_data" class="photo-preview" style="margin: 8px 0; padding: 8px; border: 1px solid #ddd; border-radius: 8px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <img [src]="photo_data" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" alt="Captured photo">
-            <div style="flex: 1;">
-              <div style="font-size: 14px; font-weight: 500;">Photo captured</div>
-              <div style="font-size: 12px; color: #666;">Ready to attach to time entry</div>
+        <div
+          *ngIf="photo_data"
+          class="photo-preview"
+          style="
+            margin: 8px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 8px">
+            <img
+              [src]="photo_data"
+              style="
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                border-radius: 4px;
+              "
+              alt="Captured photo"
+            />
+            <div style="flex: 1">
+              <div style="font-size: 14px; font-weight: 500">
+                Photo captured
+              </div>
+              <div style="font-size: 12px; color: #666">
+                Ready to attach to time entry
+              </div>
             </div>
             <ion-button size="small" fill="clear" (click)="clearPhoto()">
               <ion-icon name="close" slot="icon-only"></ion-icon>

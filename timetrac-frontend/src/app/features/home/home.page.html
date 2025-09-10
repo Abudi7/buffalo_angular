@@ -11,7 +11,7 @@
       <div class="subtitle">{{ today | date:'EEEE, MMM d' }}</div>
     </div>
     <div class="right">
-      <ion-segment value="en" (ionChange)="changeLang($event.detail.value)">
+      <ion-segment value="en" (ionChange)="onLangChange($event)">
         <ion-segment-button value="en">EN</ion-segment-button>
         <ion-segment-button value="ar">AR</ion-segment-button>
         <ion-segment-button value="de">DE</ion-segment-button>

@@ -1,6 +1,6 @@
 // NGXS auth state models the authenticated user and JWT token.
 // All mutations are centralized here to keep side-effects observable and testable.
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { AuthService, User } from '../core/auth.service';
 import { Login, Register, LoadMe, Logout } from './auth.actions';
@@ -19,7 +19,7 @@ export interface AuthStateModel {
 })
 @Injectable()
 export class AuthState {
-  constructor(private auth: AuthService) {}
+  private auth = inject(AuthService);
 
   @Selector() static user(s: AuthStateModel) { return s.user; }
   @Selector() static token(s: AuthStateModel) { return s.token; }

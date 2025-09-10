@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import {
   IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
   IonItem, IonLabel, IonSelect, IonSelectOption, IonButton, IonIcon, IonTextarea,
-  IonList, IonChip, IonSkeletonText,
+  IonList, IonChip, IonSkeletonText, IonSegment, IonSegmentButton,
   IonRefresher, IonRefresherContent
 } from '@ionic/angular/standalone';
 
@@ -23,7 +23,7 @@ import { I18nService } from '../../core/i18n.service';
     CommonModule, FormsModule,
     IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
     IonItem, IonLabel, IonSelect, IonSelectOption, IonButton, IonIcon, IonTextarea,
-    IonList, IonChip, IonSkeletonText,
+    IonList, IonChip, IonSkeletonText, IonSegment, IonSegmentButton,
     IonRefresher, IonRefresherContent
   ],
   templateUrl: './home.page.html',
@@ -148,6 +148,10 @@ export class HomePage implements OnInit, OnDestroy {
   t(key: string): string { return this.i18n.t(key); }
 
   changeLang(l: 'en'|'ar'|'de') { this.i18n.setLang(l); }
+  onLangChange(ev: CustomEvent) {
+    const val = (ev as any)?.detail?.value as 'en'|'ar'|'de' | undefined;
+    if (val) this.changeLang(val);
+  }
 
   // Card durations: only when finished
   isRunning(e: TimeEntry): boolean { return !e.end_at; }

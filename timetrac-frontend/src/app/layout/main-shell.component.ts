@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
@@ -45,14 +45,14 @@ import { Logout } from '../state/auth.actions';
   styleUrls: ['./main-shell.component.scss'],
 })
 export class MainShellComponent {
+  private store = inject(Store);
+  private router = inject(Router);
+  private menuCtrl = inject(MenuController);
+  private toast = inject(ToastController);
+
   userEmail$ = this.store.select(AuthState.user).pipe(map(u => u?.email ?? ''));
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private menuCtrl: MenuController,
-    private toast: ToastController
-  ) {}
+  constructor() {}
 
   avatarFor(email: string) {
     const seed = encodeURIComponent(email || 'user');

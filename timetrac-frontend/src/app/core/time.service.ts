@@ -1,6 +1,6 @@
 // TimeService wraps HTTP calls to the time tracking API.
 // It provides typed helpers to list/start/stop/update/remove entries.
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
@@ -21,8 +21,7 @@ export interface TimeEntry {
 @Injectable({ providedIn: 'root' })
 export class TimeService {
   private base = `${environment.API_BASE}/api/tracks`;
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   /** GET /api/tracks/ — list latest entries for the logged-in user */
   list(): Observable<TimeEntry[]> {

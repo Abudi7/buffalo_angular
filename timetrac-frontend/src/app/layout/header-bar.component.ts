@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton,
   IonChip, IonAvatar, IonLabel, IonButton
@@ -53,9 +53,8 @@ import { Logout } from '../state/auth.actions';
 })
 export class HeaderBarComponent {
   @Input() title = 'Dashboard';
+  private store = inject(Store);
   email$ = this.store.select(AuthState.user).pipe(map(u => u?.email ?? ''));
-
-  constructor(private store: Store) {}
 
   avatarFor(email: string) {
     const seed = encodeURIComponent(email || 'user');

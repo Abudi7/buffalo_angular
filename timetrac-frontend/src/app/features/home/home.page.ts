@@ -1,7 +1,7 @@
 // HomePage renders the timer controls and the latest time entries list.
 // It encapsulates minimal state and delegates persistence to TimeService.
 // The component favors clarity over micro-optimizations for maintainability.
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Ionic standalone components
@@ -53,7 +53,10 @@ export class HomePage implements OnInit, OnDestroy {
   private _clockTick?: any;
   private _dateTick?: any;
 
-  constructor(private api: TimeService, private i18n: I18nService) {}
+  private api = inject(TimeService);
+  private i18n = inject(I18nService);
+
+  constructor() {}
 
   // ==== Lifecycle ====
   ngOnInit(): void {

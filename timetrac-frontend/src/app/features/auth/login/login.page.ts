@@ -1,5 +1,5 @@
 // src/app/features/auth/login/login.page.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 // 👇 Import RouterModule so routerLink works in the template
@@ -27,11 +27,11 @@ export class LoginPage {
   loading = false;
   showPassword = false;
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private toast: ToastController
-  ) {}
+  private store = inject(Store);
+  private router = inject(Router);
+  private toast = inject(ToastController);
+
+  constructor() {}
 
   // Toggle password visibility
   togglePassword() {

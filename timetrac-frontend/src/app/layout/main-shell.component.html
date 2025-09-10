@@ -1,18 +1,14 @@
 <!-- Modern floating navigation -->
 <div class="main-shell">
   <!-- Hamburger menu button -->
-  <button 
-    class="hamburger-btn" 
-    (click)="toggleNav()"
-    [class.active]="showNav"
-  >
+  <button class="hamburger-btn" (click)="toggleNav()" [class.active]="showNav">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
   </button>
 
   <!-- Floating navigation menu -->
-  <div 
+  <div
     class="floating-nav"
     (mouseenter)="onMouseEnter()"
     (mouseleave)="onMouseLeave()"
@@ -30,12 +26,22 @@
       </div>
 
       <div class="nav-items">
-        <a routerLink="/home" routerLinkActive="active" class="nav-item" (click)="hideNav()">
+        <a
+          routerLink="/home"
+          routerLinkActive="active"
+          class="nav-item"
+          (click)="hideNav()"
+        >
           <ion-icon name="home-outline"></ion-icon>
           <span class="nav-text">Home</span>
         </a>
 
-        <a routerLink="/settings" routerLinkActive="active" class="nav-item" (click)="hideNav()">
+        <a
+          routerLink="/settings"
+          routerLinkActive="active"
+          class="nav-item"
+          (click)="hideNav()"
+        >
           <ion-icon name="settings-outline"></ion-icon>
           <span class="nav-text">Settings</span>
         </a>

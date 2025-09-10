@@ -127,7 +127,7 @@
   font-size: 3rem;
   width: 4rem;
   height: 4rem;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
   border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
@@ -202,9 +202,9 @@
   transition: all 0.2s ease;
   
   &:focus-within {
-    border-color: var(--primary);
+    border-color: var(--secondary);
     background: var(--bg-primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
 }
 
@@ -216,7 +216,7 @@
 }
 
 .input-wrapper:focus-within .input-icon {
-  color: var(--primary);
+  color: var(--secondary);
 }
 
 .modern-input {
@@ -241,7 +241,7 @@
   transition: color 0.2s ease;
   
   &:hover {
-    color: var(--primary);
+    color: var(--secondary);
   }
   
   ion-icon {
@@ -249,10 +249,37 @@
   }
 }
 
+/* ====== Password Strength Indicator ====== */
+.password-strength {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.strength-bar {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--border);
+  transition: all 0.3s ease;
+}
+
+.strength-bar.weak {
+  background: var(--danger);
+}
+
+.strength-bar.medium {
+  background: var(--warning);
+}
+
+.strength-bar.strong {
+  background: var(--success);
+}
+
 /* ====== Register Button ====== */
 .register-button {
   width: 100%;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
   color: white;
   border: none;
   border-radius: var(--radius-lg);
@@ -303,14 +330,14 @@
 }
 
 .login-link {
-  color: var(--primary);
+  color: var(--secondary);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.875rem;
   transition: color 0.2s ease;
   
   &:hover {
-    color: var(--primary-dark);
+    color: var(--primary);
     text-decoration: underline;
   }
 }
@@ -328,13 +355,38 @@
 }
 
 .footer-link {
-  color: var(--primary);
+  color: var(--secondary);
   text-decoration: none;
   font-weight: 500;
   
   &:hover {
     text-decoration: underline;
   }
+}
+
+/* ====== Form Validation ====== */
+.form-input.valid {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-input.invalid {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.validation-message {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+}
+
+.validation-message.valid {
+  color: var(--success);
+}
+
+.validation-message.invalid {
+  color: var(--danger);
 }
 
 /* ====== Animations ====== */

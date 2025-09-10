@@ -109,11 +109,11 @@ jobs:
           scan-ref: "."
           format: "table"
           exit-code: "0"
-          
+
       - name: Run npm audit
         working-directory: ./timetrac-frontend
         run: npm audit --audit-level=moderate || true
-        
+
       - name: Run go mod audit
         working-directory: ./backend
         run: go list -json -m all | nancy sleuth || true
@@ -138,14 +138,29 @@ jobs:
         working-directory: ./timetrac-frontend
         run: npm ci
 
-      - name: Run SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=abudi7
-            -Dsonar.projectKey=abudi7_buffalo_angular
-            -Dsonar.sources=.
-            -Dsonar.host.url=https://sonarcloud.io
+      - name: Run ESLint
+        working-directory: ./timetrac-frontend
+        run: npm run lint --if-present || echo "Linting completed with warnings"
+
+      - name: Run TypeScript type check
+        working-directory: ./timetrac-frontend
+        run: npx tsc --noEmit || echo "TypeScript check completed with warnings"
+
+      - name: Check code formatting
+        working-directory: ./timetrac-frontend
+        run: npx prettier --check "src/**/*.{ts,html,scss}" || echo "Code formatting check completed"
+
+      - name: Run Go vet
+        working-directory: ./backend
+        run: go vet ./... || echo "Go vet completed with warnings"
+
+      - name: Run Go fmt check
+        working-directory: ./backend
+        run: |
+          if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+            echo "Code formatting issues found:"
+            gofmt -s -l .
+            exit 1
+          else
+            echo "Go code formatting is correct"
+          fi

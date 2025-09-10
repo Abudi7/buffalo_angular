@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strings"
 
+	"backend/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
-	"backend/models"
 )
 
 const currentUserKey = "current_user"

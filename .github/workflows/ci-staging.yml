@@ -166,3 +166,4 @@ jobs:
           LHCI_SERVER_URL: ${{ secrets.LHCI_SERVER_URL }}
           LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
           STAGING_URL: ${{ secrets.STAGING_URL }}
+          LHCI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

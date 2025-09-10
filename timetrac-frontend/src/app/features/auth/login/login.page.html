@@ -75,7 +75,9 @@
               (click)="togglePassword()"
               aria-label="Toggle password visibility"
             >
-              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+              <ion-icon
+                [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              ></ion-icon>
             </button>
           </div>
         </div>
@@ -86,7 +88,11 @@
           class="login-button"
           [disabled]="loading || !f.form.valid"
         >
-          <ion-spinner *ngIf="loading" name="crescent" class="button-spinner"></ion-spinner>
+          <ion-spinner
+            *ngIf="loading"
+            name="crescent"
+            class="button-spinner"
+          ></ion-spinner>
           <span *ngIf="!loading">Sign In</span>
         </button>
 
@@ -102,9 +108,13 @@
     <div class="login-footer">
       <p class="footer-text">
         By signing in, you agree to our
-        <a href="#" class="footer-link" (click)="$event.preventDefault()">Terms of Service</a>
+        <a href="#" class="footer-link" (click)="$event.preventDefault()"
+          >Terms of Service</a
+        >
         and
-        <a href="#" class="footer-link" (click)="$event.preventDefault()">Privacy Policy</a>
+        <a href="#" class="footer-link" (click)="$event.preventDefault()"
+          >Privacy Policy</a
+        >
       </p>
     </div>
   </div>

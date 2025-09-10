@@ -293,4 +293,36 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   trackById(_: number, e: TimeEntry) { return e.id; }
+
+  /**
+   * Generate Google Maps embed URL for the given coordinates
+   */
+  getMapUrl(lat: number, lng: number): string {
+    return `https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dgsWUxO4kzJhYk&center=${lat},${lng}&zoom=15&maptype=roadmap`;
+  }
+
+  /**
+   * Open location in native maps app
+   */
+  async openInMaps(lat: number, lng: number, address?: string): Promise<void> {
+    try {
+      const label = address || `${lat}, ${lng}`;
+      const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      
+      // For mobile devices, try to open in native maps app
+      if (window.navigator.userAgent.includes('Mobile')) {
+        // Try to open in native maps app first
+        const nativeUrl = `maps://maps.google.com/maps?daddr=${lat},${lng}`;
+        window.open(nativeUrl, '_blank');
+      } else {
+        // For desktop, open in new tab
+        window.open(url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error opening maps:', error);
+      // Fallback to web version
+      const fallbackUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      window.open(fallbackUrl, '_blank');
+    }
+  }
 }

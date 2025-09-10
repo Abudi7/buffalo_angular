@@ -726,12 +726,58 @@
 }
 
 .entry-location {
+  margin-bottom: 0.5rem;
+}
+
+.location-info {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--text-secondary);
   font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.location-text {
+  flex: 1;
+}
+
+.location-map {
+  margin-top: 0.75rem;
+}
+
+.map-container {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 0.75rem;
+}
+
+.map-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.map-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+  }
 }
 
 .entry-photo {

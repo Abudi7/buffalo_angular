@@ -84,7 +84,10 @@
             </ion-select>
           </div>
           <div class="color-picker">
-            <ion-icon name="color-palette-outline" class="color-icon"></ion-icon>
+            <ion-icon
+              name="color-palette-outline"
+              class="color-icon"
+            ></ion-icon>
             <input type="color" [(ngModel)]="color" class="color-input" />
           </div>
         </div>
@@ -95,8 +98,8 @@
             <ion-icon name="location-outline"></ion-icon>
             Use Location
           </button>
-          <button 
-            class="modern-button" 
+          <button
+            class="modern-button"
             [class.success]="photo_data"
             (click)="addPhoto()"
           >
@@ -108,7 +111,11 @@
         <!-- Photo Preview -->
         <div *ngIf="photo_data" class="photo-preview">
           <div class="photo-content">
-            <img [src]="photo_data" alt="Captured photo" class="photo-thumbnail" />
+            <img
+              [src]="photo_data"
+              alt="Captured photo"
+              class="photo-thumbnail"
+            />
             <div class="photo-info">
               <div class="photo-title">Photo captured</div>
               <div class="photo-subtitle">Ready to attach to time entry</div>
@@ -230,7 +237,9 @@
                 </div>
 
                 <div class="entry-tags" *ngIf="e.tags?.length">
-                  <span *ngFor="let t of e.tags" class="entry-tag">{{ t }}</span>
+                  <span *ngFor="let t of e.tags" class="entry-tag"
+                    >{{ t }}</span
+                  >
                 </div>
 
                 <div class="entry-note" *ngIf="e.note">
@@ -242,12 +251,44 @@
                   *ngIf="e.location_addr || (e.location_lat && e.location_lng)"
                   class="entry-location"
                 >
-                  <ion-icon name="location-outline"></ion-icon>
-                  {{ e.location_addr || (e.location_lat + ', ' + e.location_lng) }}
+                  <div class="location-info">
+                    <ion-icon name="location-outline"></ion-icon>
+                    <span class="location-text">
+                      {{ e.location_addr || (e.location_lat + ', ' + e.location_lng) }}
+                    </span>
+                  </div>
+                  
+                  <!-- Map Display -->
+                  <div *ngIf="e.location_lat && e.location_lng" class="location-map">
+                    <div class="map-container">
+                      <iframe
+                        [src]="getMapUrl(e.location_lat, e.location_lng)"
+                        width="100%"
+                        height="200"
+                        style="border:0; border-radius: 8px;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                      </iframe>
+                    </div>
+                    <div class="map-actions">
+                      <button 
+                        class="map-action-btn"
+                        (click)="openInMaps(e.location_lat, e.location_lng, e.location_addr || undefined)"
+                      >
+                        <ion-icon name="open-outline"></ion-icon>
+                        Open in Maps
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div *ngIf="e.photo_data" class="entry-photo">
-                  <img [src]="e.photo_data" alt="photo" class="entry-photo-img" />
+                  <img
+                    [src]="e.photo_data"
+                    alt="photo"
+                    class="entry-photo-img"
+                  />
                 </div>
 
                 <div class="entry-meta">

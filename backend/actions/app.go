@@ -95,6 +95,20 @@ func App() *buffalo.App {
 		tracks.PATCH("/{id}", TracksUpdate)
 		tracks.DELETE("/{id}", TracksDelete)
 
+		// Team management (protected)
+		teams := api.Group("/teams")
+		teams.POST("/", CreateTeam)
+		teams.GET("/", GetTeams)
+		teams.GET("/{id}", GetTeam)
+		teams.POST("/{id}/invite", InviteMember)
+		teams.PUT("/{id}/members/{member_id}", UpdateMemberRole)
+		teams.DELETE("/{id}/members/{member_id}", RemoveMember)
+
+		// Team invitations (protected)
+		invitations := api.Group("/teams/invitations")
+		invitations.POST("/{id}/accept", AcceptInvitation)
+		invitations.POST("/{id}/decline", DeclineInvitation)
+
 		// (Optional) DEV helper: catch-all OPTIONS, if you still see preflight issues
 		// app.Options("/{ignored:.+}", func(c buffalo.Context) error {
 		// 	return c.Render(204, r.JSON(nil))

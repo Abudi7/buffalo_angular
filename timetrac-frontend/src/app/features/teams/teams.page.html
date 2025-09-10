@@ -1,0 +1,246 @@
+<!-- Teams Management Page Template -->
+<ion-content>
+  <!-- Header -->
+  <ion-header [translucent]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/home"></ion-back-button>
+      </ion-buttons>
+      <ion-title>{{ t('teams.title') }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Pull to Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="loadTeams($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Pending Invitations -->
+  <ion-card *ngIf="pendingInvitations.length > 0">
+    <ion-card-header>
+      <ion-card-title>
+        {{ t('teams.pendingInvitations') }}
+        <ion-badge color="warning">{{ pendingInvitations.length }}</ion-badge>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let invitation of pendingInvitations">
+          <ion-avatar slot="start">
+            <img
+              [src]="getAvatarUrl(invitation.user?.email || '')"
+              alt="avatar"
+            />
+          </ion-avatar>
+          <ion-label>
+            <h3>{{ invitation.user?.email }}</h3>
+            <p>{{ t('teams.invitedTo') }} {{ invitation.team_id }}</p>
+            <p>
+              {{ t('teams.role') }}: {{ getRoleDisplayName(invitation.role) }}
+            </p>
+          </ion-label>
+          <ion-button
+            slot="end"
+            fill="outline"
+            size="small"
+            (click)="acceptInvitation(invitation)"
+          >
+            {{ t('teams.accept') }}
+          </ion-button>
+          <ion-button
+            slot="end"
+            fill="clear"
+            size="small"
+            color="danger"
+            (click)="declineInvitation(invitation)"
+          >
+            {{ t('teams.decline') }}
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Teams List -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ t('teams.myTeams') }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- Empty State -->
+      <div *ngIf="teams.length === 0 && !loading" class="empty-state">
+        <ion-icon name="people-outline" size="large" color="medium"></ion-icon>
+        <h3>{{ t('teams.noTeams') }}</h3>
+        <p>{{ t('teams.createFirstTeam') }}</p>
+        <ion-button (click)="openCreateModal()">
+          <ion-icon name="add" slot="start"></ion-icon>
+          {{ t('teams.createTeam') }}
+        </ion-button>
+      </div>
+
+      <!-- Teams Grid -->
+      <ion-grid *ngIf="teams.length > 0">
+        <ion-row>
+          <ion-col size="12" size-md="6" size-lg="4" *ngFor="let team of teams">
+            <ion-card class="team-card" (click)="openTeam(team)">
+              <ion-card-header>
+                <ion-card-title>{{ team.name }}</ion-card-title>
+                <ion-card-subtitle *ngIf="team.description"
+                  >{{ team.description }}</ion-card-subtitle
+                >
+              </ion-card-header>
+              <ion-card-content>
+                <div class="team-meta">
+                  <ion-chip color="primary">
+                    <ion-icon name="people"></ion-icon>
+                    <ion-label>{{ t('teams.members') }}</ion-label>
+                  </ion-chip>
+                  <ion-chip color="secondary">
+                    <ion-icon name="calendar"></ion-icon>
+                    <ion-label>{{ formatDate(team.created_at) }}</ion-label>
+                  </ion-chip>
+                </div>
+                <div class="team-actions">
+                  <ion-button
+                    fill="clear"
+                    size="small"
+                    (click)="openInviteModal(team); $event.stopPropagation()"
+                  >
+                    <ion-icon name="person-add" slot="start"></ion-icon>
+                    {{ t('teams.invite') }}
+                  </ion-button>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <ion-skeleton-text
+      animated
+      style="width: 100%; height: 200px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 80%; height: 100px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 60%; height: 100px"
+    ></ion-skeleton-text>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openCreateModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<!-- Create Team Modal -->
+<ion-modal [isOpen]="showCreateModal" (didDismiss)="closeCreateModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ t('teams.createTeam') }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeCreateModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-label position="stacked">{{ t('teams.teamName') }}</ion-label>
+        <ion-input
+          [(ngModel)]="createTeamForm.name"
+          placeholder="{{ t('teams.enterTeamName') }}"
+          required
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ t('teams.description') }}</ion-label>
+        <ion-textarea
+          [(ngModel)]="createTeamForm.description"
+          placeholder="{{ t('teams.enterDescription') }}"
+          rows="3"
+        >
+        </ion-textarea>
+      </ion-item>
+
+      <ion-button
+        expand="block"
+        (click)="createTeam()"
+        [disabled]="!createTeamForm.name.trim()"
+      >
+        {{ t('teams.createTeam') }}
+      </ion-button>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Invite Member Modal -->
+<ion-modal [isOpen]="showInviteModal" (didDismiss)="closeInviteModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ t('teams.inviteMember') }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeInviteModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-label position="stacked">{{ t('teams.email') }}</ion-label>
+        <ion-input
+          type="email"
+          [(ngModel)]="inviteForm.email"
+          placeholder="{{ t('teams.enterEmail') }}"
+          required
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ t('teams.role') }}</ion-label>
+        <ion-select [(ngModel)]="inviteForm.role">
+          <ion-select-option
+            *ngFor="let role of getAvailableRoles()"
+            [value]="role"
+          >
+            {{ getRoleDisplayName(role) }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-button
+        expand="block"
+        (click)="inviteMember()"
+        [disabled]="!inviteForm.email.trim()"
+      >
+        {{ t('teams.sendInvitation') }}
+      </ion-button>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Toast for notifications -->
+<ion-toast
+  [isOpen]="showToast"
+  [message]="toastMessage"
+  [color]="toastColor"
+  [duration]="3000"
+  (didDismiss)="showToast = false"
+>
+</ion-toast>

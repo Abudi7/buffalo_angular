@@ -1,0 +1,13 @@
+create_table("teams") {
+  t.Column("id", "uuid", {primary: true})
+  t.Column("name", "string", {size: 255, null: false})
+  t.Column("description", "text", {null: true})
+  t.Column("owner_id", "uuid", {null: false})
+  t.Column("settings", "text", {null: true})
+  t.Column("created_at", "timestamp", {null: false})
+  t.Column("updated_at", "timestamp", {null: false})
+  
+  t.ForeignKey("owner_id", {"users": ["id"]}, {on_delete: "cascade"})
+  t.Index("teams_owner_id_idx", ["owner_id"])
+  t.Index("teams_name_idx", ["name"])
+}

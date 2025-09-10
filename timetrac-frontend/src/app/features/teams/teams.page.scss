@@ -1,0 +1,382 @@
+/**
+ * Teams Page Styles
+ * 
+ * Modern, responsive styling for the teams management interface
+ * with glass morphism effects and smooth animations.
+ */
+
+// Empty state styling
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    margin-bottom: 24px;
+  }
+}
+
+// Team card styling
+.team-card {
+  margin: 0;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  ion-card-header {
+    padding-bottom: 8px;
+    
+    ion-card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin-bottom: 4px;
+    }
+    
+    ion-card-subtitle {
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+    }
+  }
+  
+  ion-card-content {
+    padding-top: 8px;
+  }
+}
+
+// Team meta information
+.team-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  
+  ion-chip {
+    --background: rgba(59, 130, 246, 0.1);
+    --color: var(--ion-color-primary);
+    font-size: 0.8rem;
+    
+    ion-icon {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Team actions
+.team-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  
+  ion-button {
+    --color: var(--ion-color-primary);
+    font-size: 0.8rem;
+  }
+}
+
+// Loading state styling
+.loading-container {
+  padding: 20px;
+  
+  ion-skeleton-text {
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+}
+
+// Card enhancements
+ion-card {
+  margin: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  ion-card-header {
+    padding-bottom: 8px;
+    
+    ion-card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+  
+  ion-card-content {
+    padding-top: 8px;
+  }
+}
+
+// Item styling
+ion-item {
+  --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  
+  ion-avatar {
+    margin-right: 12px;
+  }
+  
+  ion-label {
+    h3 {
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin-bottom: 4px;
+    }
+    
+    p {
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      margin: 2px 0;
+    }
+  }
+  
+  ion-button {
+    margin-left: 8px;
+  }
+}
+
+// Badge styling
+ion-badge {
+  margin-left: 8px;
+  font-size: 0.8rem;
+}
+
+// Modal styling
+ion-modal {
+  --backdrop-opacity: 0.5;
+  
+  ion-content {
+    --background: var(--ion-color-light);
+  }
+  
+  ion-item {
+    --background: transparent;
+    --border-color: rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    
+    ion-label {
+      color: var(--ion-color-dark);
+      font-weight: 500;
+    }
+    
+    ion-input, ion-textarea, ion-select {
+      --color: var(--ion-color-dark);
+    }
+  }
+  
+  ion-button {
+    margin-top: 24px;
+  }
+}
+
+// Floating action button
+ion-fab {
+  ion-fab-button {
+    --background: var(--ion-color-primary);
+    --color: white;
+    --box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    
+    &:hover {
+      --box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4);
+    }
+  }
+}
+
+// Grid enhancements
+ion-grid {
+  padding: 0;
+}
+
+ion-row {
+  margin: 0;
+}
+
+ion-col {
+  padding: 8px;
+}
+
+// Header styling
+ion-header {
+  ion-toolbar {
+    --background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Content padding
+ion-content {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+// Refresher styling
+ion-refresher {
+  --color: var(--ion-color-primary);
+}
+
+// List styling
+ion-list {
+  background: transparent;
+  
+  ion-item {
+    --background: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+    border-radius: 8px;
+  }
+}
+
+// Chip styling
+ion-chip {
+  --background: rgba(59, 130, 246, 0.1);
+  --color: var(--ion-color-primary);
+  font-size: 0.8rem;
+  
+  ion-icon {
+    font-size: 1rem;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .team-card {
+    margin: 8px;
+  }
+  
+  .team-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .team-actions {
+    justify-content: center;
+    margin-top: 12px;
+  }
+  
+  .empty-state {
+    padding: 20px;
+    
+    ion-icon {
+      font-size: 3rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .team-card {
+    ion-card-header {
+      ion-card-title {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  .team-meta {
+    ion-chip {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+// Dark theme adjustments
+@media (prefers-color-scheme: dark) {
+  ion-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .team-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  ion-modal {
+    ion-content {
+      --background: var(--ion-color-dark);
+    }
+    
+    ion-item {
+      --border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Animation classes
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+// Avatar styling
+ion-avatar {
+  img {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+// Button styling
+ion-button {
+  --border-radius: 8px;
+  font-weight: 500;
+  
+  &[fill="outline"] {
+    --border-color: var(--ion-color-primary);
+    --color: var(--ion-color-primary);
+  }
+  
+  &[fill="clear"] {
+    --color: var(--ion-color-medium);
+  }
+}
+
+// Toast styling
+ion-toast {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-dark);
+  --border-radius: 8px;
+}

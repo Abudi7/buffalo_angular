@@ -1,0 +1,441 @@
+/**
+ * Reports Page Styles
+ * 
+ * Modern, responsive styling for the reports interface
+ * with glass morphism effects and smooth animations.
+ */
+
+// Empty state styling
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    margin-bottom: 24px;
+  }
+}
+
+// Metric styling
+.metric {
+  text-align: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  .metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    margin-bottom: 8px;
+  }
+  
+  .metric-label {
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Loading state styling
+.loading-container {
+  padding: 20px;
+  
+  ion-skeleton-text {
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+}
+
+// Card enhancements
+ion-card {
+  margin: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  ion-card-header {
+    padding-bottom: 8px;
+    
+    ion-card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+  
+  ion-card-content {
+    padding-top: 8px;
+  }
+}
+
+// Item styling
+ion-item {
+  --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  
+  ion-icon {
+    margin-right: 12px;
+  }
+  
+  ion-label {
+    h3 {
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin-bottom: 4px;
+    }
+    
+    p {
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      margin: 2px 0;
+    }
+  }
+  
+  ion-button {
+    margin-left: 8px;
+  }
+  
+  ion-toggle {
+    margin-left: 8px;
+  }
+}
+
+// List styling
+ion-list {
+  background: transparent;
+  
+  ion-item {
+    --background: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+    border-radius: 8px;
+  }
+}
+
+// Modal styling
+ion-modal {
+  --backdrop-opacity: 0.5;
+  
+  ion-content {
+    --background: var(--ion-color-light);
+  }
+  
+  ion-item {
+    --background: transparent;
+    --border-color: rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    
+    ion-label {
+      color: var(--ion-color-dark);
+      font-weight: 500;
+    }
+    
+    ion-input, ion-textarea, ion-select {
+      --color: var(--ion-color-dark);
+    }
+  }
+  
+  ion-button {
+    margin-top: 24px;
+  }
+  
+  ion-accordion-group {
+    margin-bottom: 16px;
+    
+    ion-accordion {
+      margin-bottom: 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      
+      ion-item[slot="header"] {
+        --background: transparent;
+        --border-color: transparent;
+        margin-bottom: 0;
+      }
+      
+      div[slot="content"] {
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+    }
+  }
+}
+
+// Floating action button
+ion-fab {
+  ion-fab-button {
+    --background: var(--ion-color-primary);
+    --color: white;
+    --box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    
+    &:hover {
+      --box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4);
+    }
+  }
+}
+
+// Grid enhancements
+ion-grid {
+  padding: 0;
+}
+
+ion-row {
+  margin: 0;
+}
+
+ion-col {
+  padding: 8px;
+}
+
+// Header styling
+ion-header {
+  ion-toolbar {
+    --background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Content padding
+ion-content {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+// Refresher styling
+ion-refresher {
+  --color: var(--ion-color-primary);
+}
+
+// Button styling
+ion-button {
+  --border-radius: 8px;
+  font-weight: 500;
+  
+  &[fill="outline"] {
+    --border-color: var(--ion-color-primary);
+    --color: var(--ion-color-primary);
+  }
+  
+  &[fill="clear"] {
+    --color: var(--ion-color-medium);
+  }
+  
+  &[expand="block"] {
+    margin-top: 16px;
+  }
+}
+
+// Toggle styling
+ion-toggle {
+  --background: rgba(255, 255, 255, 0.2);
+  --background-checked: var(--ion-color-primary);
+  --handle-background: white;
+  --handle-background-checked: white;
+}
+
+// Checkbox styling
+ion-checkbox {
+  --background: rgba(255, 255, 255, 0.2);
+  --background-checked: var(--ion-color-primary);
+  --border-color: rgba(255, 255, 255, 0.3);
+  --border-color-checked: var(--ion-color-primary);
+  --checkmark-color: white;
+}
+
+// Select styling
+ion-select {
+  --placeholder-color: var(--ion-color-medium);
+  --placeholder-opacity: 1;
+}
+
+// Input styling
+ion-input, ion-textarea {
+  --placeholder-color: var(--ion-color-medium);
+  --placeholder-opacity: 1;
+}
+
+// Toast styling
+ion-toast {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-dark);
+  --border-radius: 8px;
+}
+
+// Spinner styling
+ion-spinner {
+  --color: var(--ion-color-primary);
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .metric {
+    padding: 12px;
+    
+    .metric-value {
+      font-size: 1.5rem;
+    }
+    
+    .metric-label {
+      font-size: 0.8rem;
+    }
+  }
+  
+  ion-card {
+    margin: 8px;
+  }
+  
+  .empty-state {
+    padding: 20px;
+    
+    ion-icon {
+      font-size: 3rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .metric {
+    .metric-value {
+      font-size: 1.2rem;
+    }
+  }
+  
+  ion-button[expand="block"] {
+    font-size: 0.9rem;
+  }
+}
+
+// Dark theme adjustments
+@media (prefers-color-scheme: dark) {
+  ion-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .metric {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  ion-modal {
+    ion-content {
+      --background: var(--ion-color-dark);
+    }
+    
+    ion-item {
+      --border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    ion-accordion {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      
+      div[slot="content"] {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+// Animation classes
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+// Accordion styling
+ion-accordion-group {
+  ion-accordion {
+    ion-item[slot="header"] {
+      ion-label {
+        font-weight: 600;
+        color: var(--ion-color-dark);
+      }
+    }
+  }
+}
+
+// Quick actions grid
+ion-grid ion-row ion-col {
+  ion-button {
+    height: 60px;
+    font-size: 0.9rem;
+    
+    ion-icon {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+// Template list styling
+ion-list ion-item {
+  ion-icon[name="document"] {
+    color: var(--ion-color-primary);
+  }
+  
+  ion-button[fill="clear"] {
+    --color: var(--ion-color-medium);
+  }
+}
+
+// Scheduled reports styling
+ion-list ion-item {
+  ion-icon[name="calendar"] {
+    &[color="success"] {
+      color: var(--ion-color-success);
+    }
+    
+    &[color="medium"] {
+      color: var(--ion-color-medium);
+    }
+  }
+  
+  ion-toggle {
+    margin-left: 16px;
+  }
+  
+  ion-button[color="danger"] {
+    --color: var(--ion-color-danger);
+  }
+}

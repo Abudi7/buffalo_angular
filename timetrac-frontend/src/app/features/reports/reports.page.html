@@ -1,0 +1,471 @@
+<!-- Reports Page Template -->
+<ion-content>
+  <!-- Header -->
+  <ion-header [translucent]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/home"></ion-back-button>
+      </ion-buttons>
+      <ion-title>{{ t('reports.title') }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Pull to Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="loadScheduledReports($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Quick Actions -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ t('reports.quickActions') }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6" size-md="3">
+            <ion-button
+              expand="block"
+              fill="outline"
+              (click)="openGenerateModal()"
+            >
+              <ion-icon name="document-text" slot="start"></ion-icon>
+              {{ t('reports.generateReport') }}
+            </ion-button>
+          </ion-col>
+          <ion-col size="6" size-md="3">
+            <ion-button
+              expand="block"
+              fill="outline"
+              (click)="openScheduleModal()"
+            >
+              <ion-icon name="calendar" slot="start"></ion-icon>
+              {{ t('reports.scheduleReport') }}
+            </ion-button>
+          </ion-col>
+          <ion-col size="6" size-md="3">
+            <ion-button expand="block" fill="outline" (click)="previewReport()">
+              <ion-icon name="eye" slot="start"></ion-icon>
+              {{ t('reports.previewReport') }}
+            </ion-button>
+          </ion-col>
+          <ion-col size="6" size-md="3">
+            <ion-button
+              expand="block"
+              fill="outline"
+              (click)="loadReportTemplates()"
+            >
+              <ion-icon name="library" slot="start"></ion-icon>
+              {{ t('reports.templates') }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Report Templates -->
+  <ion-card *ngIf="reportTemplates.length > 0">
+    <ion-card-header>
+      <ion-card-title>{{ t('reports.templates') }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item
+          *ngFor="let template of reportTemplates"
+          button
+          (click)="loadTemplate(template)"
+        >
+          <ion-icon name="document" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>{{ template.title }}</h3>
+            <p>
+              {{ getReportTypeDisplayName(template.type) }} • {{
+              getReportFormatDisplayName(template.format) }}
+            </p>
+          </ion-label>
+          <ion-button slot="end" fill="clear" size="small">
+            <ion-icon name="arrow-forward"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Scheduled Reports -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ t('reports.scheduledReports') }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- Empty State -->
+      <div
+        *ngIf="scheduledReports.length === 0 && !loading"
+        class="empty-state"
+      >
+        <ion-icon
+          name="calendar-outline"
+          size="large"
+          color="medium"
+        ></ion-icon>
+        <h3>{{ t('reports.noScheduledReports') }}</h3>
+        <p>{{ t('reports.createFirstScheduledReport') }}</p>
+        <ion-button (click)="openScheduleModal()">
+          <ion-icon name="add" slot="start"></ion-icon>
+          {{ t('reports.scheduleReport') }}
+        </ion-button>
+      </div>
+
+      <!-- Scheduled Reports List -->
+      <ion-list *ngIf="scheduledReports.length > 0">
+        <ion-item *ngFor="let report of scheduledReports">
+          <ion-icon
+            name="calendar"
+            slot="start"
+            [color]="report.isActive ? 'success' : 'medium'"
+          ></ion-icon>
+          <ion-label>
+            <h3>{{ report.name }}</h3>
+            <p>
+              {{ getReportTypeDisplayName(report.config.type) }} • {{
+              getScheduleDisplayName(report.schedule) }}
+            </p>
+            <p *ngIf="report.nextRun">
+              {{ t('reports.nextRun') }}: {{ formatDate(report.nextRun) }}
+            </p>
+          </ion-label>
+          <ion-toggle
+            slot="end"
+            [checked]="report.isActive"
+            (ionChange)="toggleScheduledReport(report)"
+          >
+          </ion-toggle>
+          <ion-button
+            slot="end"
+            fill="clear"
+            size="small"
+            color="danger"
+            (click)="deleteScheduledReport(report)"
+          >
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <ion-skeleton-text
+      animated
+      style="width: 100%; height: 200px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 80%; height: 100px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 60%; height: 100px"
+    ></ion-skeleton-text>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openGenerateModal()">
+      <ion-icon name="document-text"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<!-- Generate Report Modal -->
+<ion-modal [isOpen]="showGenerateModal" (didDismiss)="closeGenerateModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ t('reports.generateReport') }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeGenerateModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-accordion-group>
+        <!-- Basic Settings -->
+        <ion-accordion value="basic">
+          <ion-item slot="header">
+            <ion-label>{{ t('reports.basicSettings') }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-item>
+              <ion-label position="stacked"
+                >{{ t('reports.reportTitle') }}</ion-label
+              >
+              <ion-input
+                [(ngModel)]="reportConfig.title"
+                placeholder="{{ t('reports.enterReportTitle') }}"
+              >
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked"
+                >{{ t('reports.reportType') }}</ion-label
+              >
+              <ion-select [(ngModel)]="reportConfig.type">
+                <ion-select-option
+                  *ngFor="let type of getAvailableReportTypes()"
+                  [value]="type"
+                >
+                  {{ getReportTypeDisplayName(type) }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked"
+                >{{ t('reports.reportFormat') }}</ion-label
+              >
+              <ion-select [(ngModel)]="reportConfig.format">
+                <ion-select-option
+                  *ngFor="let format of getAvailableReportFormats()"
+                  [value]="format"
+                >
+                  {{ getReportFormatDisplayName(format) }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+        </ion-accordion>
+
+        <!-- Date Range -->
+        <ion-accordion value="dates">
+          <ion-item slot="header">
+            <ion-label>{{ t('reports.dateRange') }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-item>
+              <ion-label position="stacked"
+                >{{ t('reports.startDate') }}</ion-label
+              >
+              <ion-datetime-button
+                datetime="start-datetime"
+              ></ion-datetime-button>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked"
+                >{{ t('reports.endDate') }}</ion-label
+              >
+              <ion-datetime-button
+                datetime="end-datetime"
+              ></ion-datetime-button>
+            </ion-item>
+          </div>
+        </ion-accordion>
+
+        <!-- Advanced Options -->
+        <ion-accordion value="advanced">
+          <ion-item slot="header">
+            <ion-label>{{ t('reports.advancedOptions') }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-item>
+              <ion-checkbox
+                [(ngModel)]="reportConfig.includeCharts"
+              ></ion-checkbox>
+              <ion-label>{{ t('reports.includeCharts') }}</ion-label>
+            </ion-item>
+
+            <ion-item>
+              <ion-checkbox
+                [(ngModel)]="reportConfig.includeDetails"
+              ></ion-checkbox>
+              <ion-label>{{ t('reports.includeDetails') }}</ion-label>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked"
+                >{{ t('reports.groupBy') }}</ion-label
+              >
+              <ion-select [(ngModel)]="reportConfig.groupBy">
+                <ion-select-option
+                  *ngFor="let option of getAvailableGroupByOptions()"
+                  [value]="option"
+                >
+                  {{ getGroupByDisplayName(option) }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked"
+                >{{ t('reports.sortBy') }}</ion-label
+              >
+              <ion-select [(ngModel)]="reportConfig.sortBy">
+                <ion-select-option
+                  *ngFor="let option of getAvailableSortByOptions()"
+                  [value]="option"
+                >
+                  {{ getSortByDisplayName(option) }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+
+      <ion-button
+        expand="block"
+        (click)="generateReport()"
+        [disabled]="generating"
+      >
+        <ion-icon name="download" slot="start" *ngIf="!generating"></ion-icon>
+        <ion-spinner name="crescent" *ngIf="generating"></ion-spinner>
+        {{ generating ? t('reports.generating') : t('reports.generateReport') }}
+      </ion-button>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Schedule Report Modal -->
+<ion-modal [isOpen]="showScheduleModal" (didDismiss)="closeScheduleModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ t('reports.scheduleReport') }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeScheduleModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-label position="stacked">{{ t('reports.reportName') }}</ion-label>
+        <ion-input
+          [(ngModel)]="scheduledReport.name"
+          placeholder="{{ t('reports.enterReportName') }}"
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ t('reports.schedule') }}</ion-label>
+        <ion-select [(ngModel)]="scheduledReport.schedule">
+          <ion-select-option
+            *ngFor="let schedule of getAvailableSchedules()"
+            [value]="schedule"
+          >
+            {{ getScheduleDisplayName(schedule) }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-checkbox [(ngModel)]="scheduledReport.isActive"></ion-checkbox>
+        <ion-label>{{ t('reports.active') }}</ion-label>
+      </ion-item>
+
+      <ion-button expand="block" (click)="createScheduledReport()">
+        {{ t('reports.createScheduledReport') }}
+      </ion-button>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Preview Report Modal -->
+<ion-modal [isOpen]="showPreviewModal" (didDismiss)="closePreviewModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ t('reports.reportPreview') }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closePreviewModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding" *ngIf="previewData">
+      <!-- Summary -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ t('reports.summary') }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="6">
+                <div class="metric">
+                  <div class="metric-value">
+                    {{ formatDuration(previewData.summary.totalHours) }}
+                  </div>
+                  <div class="metric-label">{{ t('reports.totalHours') }}</div>
+                </div>
+              </ion-col>
+              <ion-col size="6">
+                <div class="metric">
+                  <div class="metric-value">
+                    {{ previewData.summary.totalEntries }}
+                  </div>
+                  <div class="metric-label">
+                    {{ t('reports.totalEntries') }}
+                  </div>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Charts Preview -->
+      <ion-card *ngIf="reportConfig.includeCharts">
+        <ion-card-header>
+          <ion-card-title>{{ t('reports.charts') }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>{{ t('reports.chartsWillBeIncluded') }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Date Time Modals -->
+<ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime
+      id="start-datetime"
+      presentation="date"
+      [value]="reportConfig.filters.startDate"
+      (ionChange)="reportConfig.filters.startDate = $event.detail.value"
+    >
+    </ion-datetime>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime
+      id="end-datetime"
+      presentation="date"
+      [value]="reportConfig.filters.endDate"
+      (ionChange)="reportConfig.filters.endDate = $event.detail.value"
+    >
+    </ion-datetime>
+  </ng-template>
+</ion-modal>
+
+<!-- Toast for notifications -->
+<ion-toast
+  [isOpen]="showToast"
+  [message]="toastMessage"
+  [color]="toastColor"
+  [duration]="3000"
+  (didDismiss)="showToast = false"
+>
+</ion-toast>

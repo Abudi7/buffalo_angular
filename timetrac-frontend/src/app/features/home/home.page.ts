@@ -25,9 +25,8 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
   standalone: true,
   imports: [
     CommonModule, FormsModule,
-    IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
-    IonItem, IonLabel, IonSelect, IonSelectOption, IonButton, IonIcon, IonTextarea,
-    IonList, IonChip, IonSkeletonText, IonSegment, IonSegmentButton,
+    IonSelect, IonSelectOption, IonIcon, IonTextarea,
+    IonSegment, IonSegmentButton,
     IonRefresher, IonRefresherContent
   ],
   templateUrl: './home.page.html',

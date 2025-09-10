@@ -51,28 +51,6 @@ export class HomePage implements OnInit, OnDestroy {
   location_addr?: string;
   photo_data?: string;
 
-  // Slider properties
-  currentSlide = 0;
-  private slideInterval?: number;
-
-  // Slider data
-  slides = [
-    {
-      image: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=400&fit=crop',
-      title: 'Track Your Time',
-      description: 'Efficiently manage your projects and tasks'
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop',
-      title: 'Stay Productive',
-      description: 'Monitor your work patterns and improve efficiency'
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop',
-      title: 'Analyze Progress',
-      description: 'Get insights into your time allocation and productivity'
-    }
-  ];
 
   // Data
   entries: TimeEntry[] = [];
@@ -95,13 +73,11 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.load();
     this._dateTick = setInterval(() => (this.today = new Date()), 60_000);
-    this.startAutoSlide();
   }
 
   ngOnDestroy(): void {
     clearInterval(this._clockTick);
     clearInterval(this._dateTick);
-    this.stopAutoSlide();
   }
 
   // ==== API ====
@@ -283,26 +259,6 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  // Slider methods
-  goToSlide(index: number) {
-    this.currentSlide = index;
-    this.stopAutoSlide();
-    this.startAutoSlide();
-  }
-
-  startAutoSlide() {
-    this.stopAutoSlide();
-    this.slideInterval = window.setInterval(() => {
-      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
-    }, 5000);
-  }
-
-  stopAutoSlide() {
-    if (this.slideInterval) {
-      clearInterval(this.slideInterval);
-      this.slideInterval = undefined;
-    }
-  }
 
   trackById(_: number, e: TimeEntry) { return e.id; }
 }

@@ -6,12 +6,7 @@
 
   <!-- Animated Hero Section -->
   <div class="hero animated-hero">
-    <div class="hero-background">
-      <div class="floating-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-      </div>
-    </div>
+    <div class="hero-background"></div>
 
     <div class="hero-content">
       <div class="left">
@@ -51,44 +46,6 @@
     </div>
   </div>
 
-  <!-- Image Slider Section -->
-  <div class="slider-section">
-    <div class="animated-slider">
-      <div
-        class="slider-container"
-        [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'"
-      >
-        <div
-          *ngFor="let slide of slides; let i = index"
-          class="slide-content"
-          [class.active]="i === currentSlide"
-        >
-          <div
-            class="slide-image"
-            [style.background-image]="'url(' + slide.image + ')'"
-          >
-            <div class="slide-overlay">
-              <h2 class="slide-title">{{ slide.title }}</h2>
-              <p class="slide-description">{{ slide.description }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Slider Navigation -->
-    <div class="slider-nav">
-      <div class="nav-dots">
-        <span
-          *ngFor="let slide of slides; let i = index"
-          class="dot"
-          [class.active]="i === currentSlide"
-          (click)="goToSlide(i)"
-        >
-        </span>
-      </div>
-    </div>
-  </div>
 
   <!-- Animated Live Clock -->
   <div class="clock animated-clock" [class.pulsing]="!!runningEntry">
@@ -96,7 +53,6 @@
       <ion-icon [name]="'time-outline'"></ion-icon>
     </div>
     <span class="clock-time">{{ hhmmss(elapsedMs) }}</span>
-    <div class="clock-glow" *ngIf="!!runningEntry"></div>
   </div>
 
   <!-- Animated Controls + List -->

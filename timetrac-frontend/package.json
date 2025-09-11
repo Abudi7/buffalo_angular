@@ -36,6 +36,10 @@
     "@ionic/angular": "^8.7.3",
     "@ngxs/storage-plugin": "^20.1.0",
     "@ngxs/store": "^20.1.0",
+    "chart.js": "^4.4.0",
+    "ng2-charts": "^5.0.4",
+    "jspdf": "^2.5.1",
+    "html2canvas": "^1.4.1",
     "ionicons": "^7.4.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

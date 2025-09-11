@@ -38,6 +38,21 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/home/home.page').then((m) => m.HomePage),
       },
+      {
+        path: 'analytics',
+        loadComponent: () =>
+          import('./features/analytics/analytics.page').then((m) => m.AnalyticsPage),
+      },
+      {
+        path: 'teams',
+        loadComponent: () =>
+          import('./features/teams/teams.page').then((m) => m.TeamsPage),
+      },
+      {
+        path: 'reports',
+        loadComponent: () =>
+          import('./features/reports/reports.page').then((m) => m.ReportsPage),
+      },
     ],
   },
 

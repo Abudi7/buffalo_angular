@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict qZZbFMFg5xcc2eZ5b3ElYv6qFyvckOhgdAKzKg3c83RKBA5LWzFaWloJdUmm3K7
+\restrict Vc7ch69lNKPIJkt1jXt4ECTqzNel3qOw5ivTo4bc8j9PhasJEmApl3wb7FiDaUl
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 16.10 (Homebrew)
@@ -64,6 +64,42 @@ CREATE TABLE public.schema_migration (
 ALTER TABLE public.schema_migration OWNER TO app;
 
 --
+-- Name: team_members; Type: TABLE; Schema: public; Owner: app
+--
+
+CREATE TABLE public.team_members (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    team_id uuid,
+    user_id uuid,
+    role character varying(50) DEFAULT 'member'::character varying,
+    status character varying(50) DEFAULT 'active'::character varying,
+    invited_by uuid,
+    joined_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.team_members OWNER TO app;
+
+--
+-- Name: teams; Type: TABLE; Schema: public; Owner: app
+--
+
+CREATE TABLE public.teams (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name character varying(255),
+    description text,
+    owner_id uuid,
+    settings text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.teams OWNER TO app;
+
+--
 -- Name: timetrac; Type: TABLE; Schema: public; Owner: app
 --
 
@@ -119,6 +155,22 @@ ALTER TABLE ONLY public.schema_migration
 
 
 --
+-- Name: team_members team_members_pkey; Type: CONSTRAINT; Schema: public; Owner: app
+--
+
+ALTER TABLE ONLY public.team_members
+    ADD CONSTRAINT team_members_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: teams teams_pkey; Type: CONSTRAINT; Schema: public; Owner: app
+--
+
+ALTER TABLE ONLY public.teams
+    ADD CONSTRAINT teams_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: timetrac timetrac_pkey; Type: CONSTRAINT; Schema: public; Owner: app
 --
 
@@ -156,6 +208,48 @@ CREATE UNIQUE INDEX schema_migration_version_idx ON public.schema_migration USIN
 
 
 --
+-- Name: team_members_status_idx; Type: INDEX; Schema: public; Owner: app
+--
+
+CREATE INDEX team_members_status_idx ON public.team_members USING btree (status);
+
+
+--
+-- Name: team_members_team_id_idx; Type: INDEX; Schema: public; Owner: app
+--
+
+CREATE INDEX team_members_team_id_idx ON public.team_members USING btree (team_id);
+
+
+--
+-- Name: team_members_team_user_idx; Type: INDEX; Schema: public; Owner: app
+--
+
+CREATE UNIQUE INDEX team_members_team_user_idx ON public.team_members USING btree (team_id, user_id);
+
+
+--
+-- Name: team_members_user_id_idx; Type: INDEX; Schema: public; Owner: app
+--
+
+CREATE INDEX team_members_user_id_idx ON public.team_members USING btree (user_id);
+
+
+--
+-- Name: teams_name_idx; Type: INDEX; Schema: public; Owner: app
+--
+
+CREATE INDEX teams_name_idx ON public.teams USING btree (name);
+
+
+--
+-- Name: teams_owner_id_idx; Type: INDEX; Schema: public; Owner: app
+--
+
+CREATE INDEX teams_owner_id_idx ON public.teams USING btree (owner_id);
+
+
+--
 -- Name: timetrac_user_id_idx; Type: INDEX; Schema: public; Owner: app
 --
 
@@ -171,8 +265,40 @@ ALTER TABLE ONLY public.auth_tokens
 
 
 --
+-- Name: team_members team_members_invited_by_fk; Type: FK CONSTRAINT; Schema: public; Owner: app
+--
+
+ALTER TABLE ONLY public.team_members
+    ADD CONSTRAINT team_members_invited_by_fk FOREIGN KEY (invited_by) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: team_members team_members_teams_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: app
+--
+
+ALTER TABLE ONLY public.team_members
+    ADD CONSTRAINT team_members_teams_id_fk FOREIGN KEY (team_id) REFERENCES public.teams(id) ON DELETE CASCADE;
+
+
+--
+-- Name: team_members team_members_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: app
+--
+
+ALTER TABLE ONLY public.team_members
+    ADD CONSTRAINT team_members_users_id_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: teams teams_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: app
+--
+
+ALTER TABLE ONLY public.teams
+    ADD CONSTRAINT teams_users_id_fk FOREIGN KEY (owner_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict qZZbFMFg5xcc2eZ5b3ElYv6qFyvckOhgdAKzKg3c83RKBA5LWzFaWloJdUmm3K7
+\unrestrict Vc7ch69lNKPIJkt1jXt4ECTqzNel3qOw5ivTo4bc8j9PhasJEmApl3wb7FiDaUl
 

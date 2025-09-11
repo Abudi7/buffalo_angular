@@ -37,6 +37,36 @@
         </a>
 
         <a
+          routerLink="/analytics"
+          routerLinkActive="active"
+          class="nav-item"
+          (click)="hideNav()"
+        >
+          <ion-icon name="analytics-outline"></ion-icon>
+          <span class="nav-text">Analytics</span>
+        </a>
+
+        <a
+          routerLink="/teams"
+          routerLinkActive="active"
+          class="nav-item"
+          (click)="hideNav()"
+        >
+          <ion-icon name="people-outline"></ion-icon>
+          <span class="nav-text">Teams</span>
+        </a>
+
+        <a
+          routerLink="/reports"
+          routerLinkActive="active"
+          class="nav-item"
+          (click)="hideNav()"
+        >
+          <ion-icon name="document-text-outline"></ion-icon>
+          <span class="nav-text">Reports</span>
+        </a>
+
+        <a
           routerLink="/settings"
           routerLinkActive="active"
           class="nav-item"

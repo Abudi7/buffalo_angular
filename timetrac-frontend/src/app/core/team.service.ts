@@ -183,7 +183,7 @@ export class TeamService {
    * Get pending invitations for the current user
    */
   getPendingInvitations(): Observable<TeamMember[]> {
-    return this.http.get<ApiResponse<TeamMember[]>>(`${this.baseUrl}/invitations/pending`)
+    return this.http.get<ApiResponse<TeamMember[]>>(`${this.baseUrl.replace('/teams', '')}/pending`)
       .pipe(
         map(response => response.data)
       );

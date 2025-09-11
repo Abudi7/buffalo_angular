@@ -1,43 +1,21 @@
-<!-- Analytics Dashboard Template -->
 <ion-content>
   <!-- Header -->
-  <ion-header [translucent]="true">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="/home"></ion-back-button>
-      </ion-buttons>
-      <ion-title>{{ t('analytics.title') }}</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ t('analytics.title') }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{ t('analytics.description') }}</p>
+    </ion-card-content>
+  </ion-card>
 
-  <!-- Pull to Refresh -->
-  <ion-refresher slot="fixed" (ionRefresh)="loadAnalytics($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-  <!-- Date Range Selector -->
+  <!-- Date Range Filter -->
   <ion-card>
     <ion-card-header>
       <ion-card-title>{{ t('analytics.dateRange') }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-segment [(ngModel)]="selectedRange" (ionChange)="onRangeChange()">
-        <ion-segment-button value="week">
-          <ion-label>{{ t('analytics.week') }}</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="month">
-          <ion-label>{{ t('analytics.month') }}</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="quarter">
-          <ion-label>{{ t('analytics.quarter') }}</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="year">
-          <ion-label>{{ t('analytics.year') }}</ion-label>
-        </ion-segment-button>
-      </ion-segment>
-      
-      <!-- Custom Date Range -->
-      <div class="custom-date-range" *ngIf="selectedRange === 'custom'">
+      <div class="date-range-controls">
         <ion-item>
           <ion-label>{{ t('analytics.startDate') }}</ion-label>
           <ion-datetime-button datetime="start-datetime"></ion-datetime-button>
@@ -48,7 +26,7 @@
         </ion-item>
       </div>
     </ion-card-content>
-  </ionion-card>
+  </ion-card>
 
   <!-- Key Metrics -->
   <ion-card>
@@ -58,30 +36,30 @@
     <ion-card-content>
       <ion-grid>
         <ion-row>
-          <ion-col size="6">
-            <div class="metric-card">
-              <div class="metric-value">{{ formatHours(totalHours) }}</div>
-              <div class="metric-label">{{ t('analytics.totalTime') }}</div>
+          <ion-col size="6" size-md="3">
+            <div class="metric">
+              <div class="metric-value">{{ formatDuration(totalHours) }}</div>
+              <div class="metric-label">{{ t('analytics.totalHours') }}</div>
             </div>
           </ion-col>
-          <ion-col size="6">
-            <div class="metric-card">
-              <div class="metric-value">{{ formatHours(averageDailyHours) }}</div>
-              <div class="metric-label">{{ t('analytics.avgDaily') }}</div>
+          <ion-col size="6" size-md="3">
+            <div class="metric">
+              <div class="metric-value">{{ totalEntries }}</div>
+              <div class="metric-label">{{ t('analytics.totalEntries') }}</div>
             </div>
           </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="6">
-            <div class="metric-card">
-              <div class="metric-value">{{ totalProjects }}</div>
-              <div class="metric-label">{{ t('analytics.totalProjects') }}</div>
+          <ion-col size="6" size-md="3">
+            <div class="metric">
+              <div class="metric-value">{{ averageHours }}</div>
+              <div class="metric-label">{{ t('analytics.averageHours') }}</div>
             </div>
           </ion-col>
-          <ion-col size="6">
-            <div class="metric-card">
-              <div class="metric-value">{{ mostProductiveHour }}:00</div>
-              <div class="metric-label">{{ t('analytics.mostProductiveHour') }}</div>
+          <ion-col size="6" size-md="3">
+            <div class="metric">
+              <div class="metric-value">{{ activeProjects }}</div>
+              <div class="metric-label">
+                {{ t('analytics.activeProjects') }}
+              </div>
             </div>
           </ion-col>
         </ion-row>
@@ -89,107 +67,140 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Daily Time Tracking Chart -->
-  <ion-card>
+  <!-- Daily Tracking Chart -->
+  <ion-card class="chart-card">
     <ion-card-header>
       <ion-card-title>{{ t('analytics.dailyTracking') }}</ion-card-title>
+      <ion-card-subtitle>Last 7 days</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <div class="chart-container">
-        <canvas baseChart
-                [data]="dailyChartData"
-                [options]="lineChartOptions"
-                type="line">
-        </canvas>
+        <div class="chart-bars">
+          <div
+            *ngFor="let day of weeklyData; let i = index"
+            class="chart-bar-container"
+          >
+            <div class="chart-bar" [style.height.%]="getBarHeight(day.hours)">
+              <div class="bar-value">{{ day.hours }}h</div>
+            </div>
+            <div class="bar-label">{{ day.day }}</div>
+          </div>
+        </div>
       </div>
     </ion-card-content>
   </ion-card>
 
-  <!-- Project Distribution -->
-  <ion-card>
+  <!-- Project Distribution Chart -->
+  <ion-card class="chart-card">
     <ion-card-header>
       <ion-card-title>{{ t('analytics.projectDistribution') }}</ion-card-title>
+      <ion-card-subtitle>Time spent by project</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <div class="chart-container">
-        <canvas baseChart
-                [data]="projectChartData"
-                [options]="doughnutChartOptions"
-                type="doughnut">
-        </canvas>
+        <div class="project-list">
+          <div
+            *ngFor="let project of projectData; let i = index"
+            class="project-item"
+          >
+            <div class="project-info">
+              <div
+                class="project-color"
+                [style.background-color]="getProjectColor(i)"
+              ></div>
+              <div class="project-details">
+                <div class="project-name">{{ project.name }}</div>
+                <div class="project-hours">
+                  {{ project.hours }}h ({{ project.percentage }}%)
+                </div>
+              </div>
+            </div>
+            <div class="project-bar">
+              <div
+                class="project-progress"
+                [style.width.%]="project.percentage"
+                [style.background-color]="getProjectColor(i)"
+              ></div>
+            </div>
+          </div>
+        </div>
       </div>
     </ion-card-content>
   </ion-card>
 
-  <!-- Hourly Productivity -->
-  <ion-card>
+  <!-- Weekly Overview Chart -->
+  <ion-card class="chart-card">
+    <ion-card-header>
+      <ion-card-title>Weekly Overview</ion-card-title>
+      <ion-card-subtitle>Hours tracked this week</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="chart-container">
+        <div class="circular-progress">
+          <div
+            class="progress-circle"
+            [style.background]="getCircularProgress()"
+          >
+            <div class="progress-content">
+              <div class="progress-value">{{ totalHours }}h</div>
+              <div class="progress-label">This Week</div>
+            </div>
+          </div>
+        </div>
+        <div class="progress-details">
+          <div class="detail-item">
+            <span class="detail-label">Goal:</span>
+            <span class="detail-value">40h</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Remaining:</span>
+            <span class="detail-value">{{ 40 - totalHours }}h</span>
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Hourly Productivity Chart -->
+  <ion-card class="chart-card">
     <ion-card-header>
       <ion-card-title>{{ t('analytics.hourlyProductivity') }}</ion-card-title>
+      <ion-card-subtitle>Most productive hours</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <div class="chart-container">
-        <canvas baseChart
-                [data]="hourlyChartData"
-                [options]="barChartOptions"
-                type="bar">
-        </canvas>
+        <div class="hourly-chart">
+          <div
+            *ngFor="let hour of hourlyData; let i = index"
+            class="hourly-bar-container"
+          >
+            <div
+              class="hourly-bar"
+              [style.height.%]="getHourlyBarHeight(hour.value)"
+            >
+              <div class="bar-value">{{ hour.value }}h</div>
+            </div>
+            <div class="hour-label">{{ hour.hour }}:00</div>
+          </div>
+        </div>
       </div>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- Weekly Comparison -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{ t('analytics.weeklyComparison') }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="chart-container">
-        <canvas baseChart
-                [data]="weeklyChartData"
-                [options]="barChartOptions"
-                type="bar">
-        </canvas>
-      </div>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- Insights -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{ t('analytics.insights') }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-icon name="trophy" slot="start" color="warning"></ion-icon>
-        <ion-label>
-          <h3>{{ t('analytics.mostProductiveDay') }}</h3>
-          <p>{{ mostProductiveDay || t('analytics.noData') }}</p>
-        </ion-label>
-      </ion-item>
-      
-      <ion-item>
-        <ion-icon name="star" slot="start" color="primary"></ion-icon>
-        <ion-label>
-          <h3>{{ t('analytics.topProject') }}</h3>
-          <p>{{ topProject || t('analytics.noData') }}</p>
-        </ion-label>
-      </ion-item>
-      
-      <ion-item>
-        <ion-icon name="time" slot="start" color="success"></ion-icon>
-        <ion-label>
-          <h3>{{ t('analytics.totalEntries') }}</h3>
-          <p>{{ filteredEntries.length }} {{ t('analytics.entries') }}</p>
-        </ion-label>
-      </ion-item>
     </ion-card-content>
   </ion-card>
 
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-container">
-    <ion-skeleton-text animated style="width: 100%; height: 200px;"></ion-skeleton-text>
-    <ion-skeleton-text animated style="width: 80%; height: 100px;"></ion-skeleton-text>
-    <ion-skeleton-text animated style="width: 60%; height: 100px;"></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 100%; height: 200px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 80%; height: 100px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 60%; height: 100px"
+    ></ion-skeleton-text>
   </div>
 </ion-content>
 
@@ -200,7 +211,8 @@
       id="start-datetime"
       presentation="date"
       [value]="startDate"
-      (ionChange)="startDate = $event.detail.value; onDateChange()">
+      (ionChange)="onStartDateChange($event)"
+    >
     </ion-datetime>
   </ng-template>
 </ion-modal>
@@ -211,7 +223,8 @@
       id="end-datetime"
       presentation="date"
       [value]="endDate"
-      (ionChange)="endDate = $event.detail.value; onDateChange()">
+      (ionChange)="onEndDateChange($event)"
+    >
     </ion-datetime>
   </ng-template>
 </ion-modal>

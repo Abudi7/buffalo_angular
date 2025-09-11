@@ -109,6 +109,15 @@ func App() *buffalo.App {
 		invitations.POST("/{id}/accept", AcceptInvitation)
 		invitations.POST("/{id}/decline", DeclineInvitation)
 
+		// Reports endpoints (protected)
+		api.GET("/scheduled", GetScheduledReports)
+		api.POST("/scheduled", CreateScheduledReport)
+		api.GET("/templates", GetReportTemplates)
+		api.POST("/preview", PreviewReport)
+
+		// Team invitations pending (protected)
+		api.GET("/pending", GetPendingInvitations)
+
 		// (Optional) DEV helper: catch-all OPTIONS, if you still see preflight issues
 		// app.Options("/{ignored:.+}", func(c buffalo.Context) error {
 		// 	return c.Render(204, r.JSON(nil))

@@ -153,6 +153,23 @@ func GetTeams(c buffalo.Context) error {
 }
 
 /**
+ * GetPendingInvitations retrieves pending team invitations for the current user
+ * GET /api/pending
+ */
+func GetPendingInvitations(c buffalo.Context) error {
+	// For now, return empty array since we don't have invitations implemented yet
+	// In a real implementation, this would query the database for user's pending invitations
+
+	pendingInvitations := []map[string]interface{}{}
+
+	return c.Render(http.StatusOK, r.JSON(map[string]interface{}{
+		"success": true,
+		"data":    pendingInvitations,
+		"message": "Pending invitations retrieved successfully",
+	}))
+}
+
+/**
  * GetTeam retrieves a specific team with members
  * GET /api/teams/{id}
  */

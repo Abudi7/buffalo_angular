@@ -99,10 +99,12 @@ func Register(c buffalo.Context) error {
 
 	// Generate JWT token for immediate login
 	token, jti, exp, _ := GenerateJWT(u.ID.String())
-	_ = tx.RawQuery(`
-		INSERT INTO auth_tokens (jti, user_id, expires_at, created_at)
-		VALUES (?, ?, ?, now())
-	`, jti, u.ID.String(), exp).Exec()
+	if err := tx.RawQuery(`
+		INSERT INTO auth_tokens (jti, user_id, expires_at, created_at, updated_at)
+		VALUES (?, ?, ?, now(), now())
+	`, jti, u.ID.String(), exp).Exec(); err != nil {
+		return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "cannot create auth token"}))
+	}
 
 	return c.Render(http.StatusCreated, r.JSON(map[string]any{
 		"user":       u,

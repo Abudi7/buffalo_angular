@@ -353,9 +353,20 @@ func TracksDelete(c buffalo.Context) error {
 	}
 
 	// Direct SQL deletion for efficiency with ownership check
-	_, err = tx.Store.Exec(`DELETE FROM timetrac WHERE id = $1 AND user_id = $2`, id, uid)
+	result, err := tx.Store.Exec(`DELETE FROM timetrac WHERE id = $1 AND user_id = $2`, id, uid)
 	if err != nil {
 		return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "cannot delete"}))
 	}
+
+	// Check if any rows were actually deleted
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return c.Render(http.StatusInternalServerError, r.JSON(map[string]string{"error": "cannot check deletion"}))
+	}
+
+	if rowsAffected == 0 {
+		return c.Render(http.StatusNotFound, r.JSON(map[string]string{"error": "not found"}))
+	}
+
 	return c.Render(http.StatusOK, r.JSON(map[string]string{"status": "deleted"}))
 }

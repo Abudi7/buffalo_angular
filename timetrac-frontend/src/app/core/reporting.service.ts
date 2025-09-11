@@ -120,7 +120,7 @@ interface ApiResponse<T> {
 })
 export class ReportingService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.API_BASE}/api/reports`;
+  private baseUrl = `${environment.API_BASE}/api`;
 
   /**
    * Generate a report

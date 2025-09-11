@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
 
 // Ionic components
 import {
-  IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
+  IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
   IonItem, IonLabel, IonButton, IonIcon, IonFab, IonFabButton,
   IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton,
   IonInput, IonTextarea, IonSelect, IonSelectOption, IonChip,
@@ -38,7 +38,7 @@ import { I18nService } from '../../core/i18n.service';
   standalone: true,
   imports: [
     CommonModule, FormsModule,
-    IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
+    IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
     IonItem, IonLabel, IonButton, IonIcon, IonFab, IonFabButton,
     IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton,
     IonInput, IonTextarea, IonSelect, IonSelectOption, IonChip,

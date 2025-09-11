@@ -442,7 +442,7 @@
       id="start-datetime"
       presentation="date"
       [value]="reportConfig.filters.startDate"
-      (ionChange)="reportConfig.filters.startDate = $event.detail.value"
+      (ionChange)="onStartDateChange($event)"
     >
     </ion-datetime>
   </ng-template>
@@ -454,7 +454,7 @@
       id="end-datetime"
       presentation="date"
       [value]="reportConfig.filters.endDate"
-      (ionChange)="reportConfig.filters.endDate = $event.detail.value"
+      (ionChange)="onEndDateChange($event)"
     >
     </ion-datetime>
   </ng-template>

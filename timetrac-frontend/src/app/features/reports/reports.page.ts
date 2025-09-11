@@ -29,7 +29,7 @@ import {
   IonList, IonAvatar, IonSkeletonText, IonRefresher, IonRefresherContent,
   IonAlert, IonActionSheet, IonToast, IonBadge, IonGrid, IonRow, IonCol,
   IonDatetime, IonDatetimeButton, IonCheckbox, IonSegment, IonSegmentButton,
-  IonAccordion, IonAccordionGroup, IonToggle
+  IonAccordion, IonAccordionGroup, IonToggle, IonSpinner
 } from '@ionic/angular/standalone';
 
 import { 
@@ -56,7 +56,7 @@ import { I18nService } from '../../core/i18n.service';
     IonList, IonAvatar, IonSkeletonText, IonRefresher, IonRefresherContent,
     IonAlert, IonActionSheet, IonToast, IonBadge, IonGrid, IonRow, IonCol,
     IonDatetime, IonDatetimeButton, IonCheckbox, IonSegment, IonSegmentButton,
-    IonAccordion, IonAccordionGroup, IonToggle
+    IonAccordion, IonAccordionGroup, IonToggle, IonSpinner
   ],
   templateUrl: './reports.page.html',
   styleUrls: ['./reports.page.scss'],
@@ -111,7 +111,7 @@ export class ReportsPage implements OnInit {
   /**
    * Current report configuration
    */
-  reportConfig: ReportConfig = this.reportingService.getDefaultReportConfig();
+  reportConfig!: ReportConfig;
   
   /**
    * Scheduled report form data
@@ -160,6 +160,7 @@ export class ReportsPage implements OnInit {
   // ===== LIFECYCLE HOOKS =====
   
   ngOnInit(): void {
+    this.reportConfig = this.reportingService.getDefaultReportConfig();
     this.loadScheduledReports();
     this.loadReportTemplates();
   }
@@ -508,5 +509,19 @@ export class ReportsPage implements OnInit {
    */
   getAvailableSortByOptions(): string[] {
     return ['date', 'project', 'duration', 'user'];
+  }
+
+  /**
+   * Handle start date change
+   */
+  onStartDateChange(event: any): void {
+    this.reportConfig.filters.startDate = event.detail.value as string;
+  }
+
+  /**
+   * Handle end date change
+   */
+  onEndDateChange(event: any): void {
+    this.reportConfig.filters.endDate = event.detail.value as string;
   }
 }
